@@ -1,0 +1,112 @@
+{
+  "case": "normalize_lookup",
+  "category": "cross_file",
+  "status": "validation_rejected",
+  "issue": "pipeline.py lookup_code(' eu ') returns None; callers expect the supported region code 2.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-0zkp32vr/checks.py\", line 6, in <module>\n    assert p.lookup_code(' eu ') == 2\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.02
+  },
+  "context": "FILE pipeline.py\n1: from config import REGION_CODES\n2: \n3: def lookup_code(region):\n4:     return REGION_CODES.get(region)\n\nFILE README.md\n1: lookup_code accepts region strings with surrounding whitespace and mixed case. Unknown regions return None. Configuration keys are lowercase.\n\nFILE config.py\n1: REGION_CODES = {'us': 1, 'eu': 2}\n",
+  "selection": [
+    {
+      "path": "pipeline.py",
+      "reason": "error match",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "path": "README.md",
+      "reason": "documentation",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 1
+    },
+    {
+      "path": "config.py",
+      "reason": "imported by pipeline.py",
+      "depth": 1,
+      "start_line": 1,
+      "end_line": 1
+    }
+  ],
+  "retrieval_notes": [],
+  "result": {
+    "model": "qwen3:8b",
+    "edit_status": "rejected",
+    "output_truncated": false,
+    "raw_response": "DIAGNOSIS RESPONSE\nREQUIREMENTS: lookup_code must return the supported region code 2 for input ' eu ' (line 1, README.md). REGION_CODES uses lowercase keys (line 1, config.py).  \nCAUSE: lookup_code fails to strip whitespace and normalize case, leading to ' eu ' not matching 'eu' key.  \nMISSING EVIDENCE: None needed for this diagnosis.\n\nEDIT ATTEMPT 1\nFILE: pipeline.py\n<<<OLD>>>\n    return REGION_CODES.get(region)\n<<<NEW>>>\n    return REGION_CODES.get(region.strip().lower())\n<<<END>>\n\nEDIT ATTEMPT 2\nFILE: pipeline.py\n<<<OLD>>>\n    return REGION_CODES.get(region)\n<<<NEW>>>\n    return REGION_CODES.get(region.strip().lower())\n<<<END>>",
+    "answer": "### Diagnosis (model-generated)\nREQUIREMENTS: lookup_code must return the supported region code 2 for input ' eu ' (line 1, README.md). REGION_CODES uses lowercase keys (line 1, config.py).  \nCAUSE: lookup_code fails to strip whitespace and normalize case, leading to ' eu ' not matching 'eu' key.  \nMISSING EVIDENCE: None needed for this diagnosis.\n\n### First edit rejected\nProposed Python code has invalid syntax: invalid syntax\n\n### No patch generated\nProposed Python code has invalid syntax: invalid syntax",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "REQUIREMENTS: lookup_code must return the supported region code 2 for input ' eu ' (line 1, README.md). REGION_CODES uses lowercase keys (line 1, config.py).  \nCAUSE: lookup_code fails to strip whitespace and normalize case, leading to ' eu ' not matching 'eu' key.  \nMISSING EVIDENCE: None needed for this diagnosis.",
+        "truncated": false,
+        "elapsed_seconds": 2.34,
+        "generated_tokens": 80,
+        "tokens_per_second": 39.13
+      },
+      {
+        "stage": "edit",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\n    return REGION_CODES.get(region)\n<<<NEW>>>\n    return REGION_CODES.get(region.strip().lower())\n<<<END>>",
+        "truncated": false,
+        "elapsed_seconds": 1.26,
+        "generated_tokens": 34,
+        "tokens_per_second": 39.62
+      },
+      {
+        "stage": "edit_retry",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\n    return REGION_CODES.get(region)\n<<<NEW>>>\n    return REGION_CODES.get(region.strip().lower())\n<<<END>>",
+        "truncated": false,
+        "elapsed_seconds": 1.08,
+        "generated_tokens": 34,
+        "tokens_per_second": 39.39
+      }
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "validation_rejected",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\n    return REGION_CODES.get(region)\n<<<NEW>>>\n    return REGION_CODES.get(region.strip().lower())\n<<<END>>",
+        "elapsed_seconds": 1.26,
+        "error": "Proposed Python code has invalid syntax: invalid syntax",
+        "retry_feedback": "Proposed Python code has invalid syntax: invalid syntax"
+      },
+      {
+        "attempt": 2,
+        "status": "validation_rejected",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\n    return REGION_CODES.get(region)\n<<<NEW>>>\n    return REGION_CODES.get(region.strip().lower())\n<<<END>>",
+        "elapsed_seconds": 1.08,
+        "error": "Proposed Python code has invalid syntax: invalid syntax"
+      }
+    ],
+    "retry_count": 1,
+    "failure_kind": "validation_rejected",
+    "accepted_edit": null,
+    "settings": {
+      "version": "0.6",
+      "think_by_stage": {
+        "diagnose": false,
+        "edit": false
+      },
+      "format": "omitted",
+      "num_ctx": 4096,
+      "diagnosis_token_limit": 2400,
+      "edit_token_limit": 1600,
+      "max_corrective_retries": 1
+    },
+    "error": "Proposed Python code has invalid syntax: invalid syntax",
+    "elapsed_seconds": 4.69,
+    "output_tokens": 148
+  },
+  "model_seconds": 4.69,
+  "retry_count": 1,
+  "first_edit_status": "validation_rejected",
+  "error": "Proposed Python code has invalid syntax: invalid syntax"
+}

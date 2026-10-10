@@ -1,0 +1,108 @@
+{
+  "case": "filter_boundary",
+  "category": "filter_contract",
+  "status": "repaired",
+  "issue": "pipeline.py nonnegative([0, -2, 3]) drops zero, producing [3] instead of [0, 3].",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-u_2n7kqr/checks.py\", line 7, in <module>\n    assert p.nonnegative(values) == [0,3]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.036
+  },
+  "context": "FILE pipeline.py\n1: def nonnegative(values):\n2:     return [value for value in values if value > 0]\n\nFILE README.md\n1: nonnegative returns a new list containing every value greater than or equal to zero. Preserve original order and duplicates; do not modify the input list. Values are integers.\n",
+  "selection": [
+    {
+      "path": "pipeline.py",
+      "reason": "error match",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 2
+    },
+    {
+      "path": "README.md",
+      "reason": "documentation",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 1
+    }
+  ],
+  "retrieval_notes": [],
+  "result": {
+    "model": "qwen3:1.7b",
+    "edit_status": "checks_passed",
+    "output_truncated": false,
+    "raw_response": "DIAGNOSIS RESPONSE\nREQUIREMENTS:  \nThe function must return a list containing every value greater than or equal to zero, preserving original order and duplicates. It must not modify the input list. The function must handle edge cases, such as when the input is empty or contains zero.\n\nCAUSE:  \nThe implementation violates the requirement that the function must return values greater than or equal to zero. The current implementation filters values to those greater than zero, thereby excluding zero. The README.md states that the function should return values greater than or equal to zero, but the code incorrectly filters to values greater than zero.\n\nMISSING EVIDENCE:  \nNone needed for this diagnosis. The implementation does not include any logic to handle values equal to zero, which is required by the specification.\n\nEDIT ATTEMPT 1\nFILE: pipeline.py\n<<<OLD>>>\nreturn [value for value in values if value > 0]\n<<<NEW>>>\nreturn [value for value in values if value >= 0]",
+    "answer": "### Diagnosis (model-generated)\nREQUIREMENTS:  \nThe function must return a list containing every value greater than or equal to zero, preserving original order and duplicates. It must not modify the input list. The function must handle edge cases, such as when the input is empty or contains zero.\n\nCAUSE:  \nThe implementation violates the requirement that the function must return values greater than or equal to zero. The current implementation filters values to those greater than zero, thereby excluding zero. The README.md states that the function should return values greater than or equal to zero, but the code incorrectly filters to values greater than zero.\n\nMISSING EVIDENCE:  \nNone needed for this diagnosis. The implementation does not include any logic to handle values equal to zero, which is required by the specification.\n\n### Proposed diff\n```diff\n--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def nonnegative(values):\n-    return [value for value in values if value > 0]\n+    return [value for value in values if value >= 0]\n```\n\nSource-match and compilation checks passed. Semantic correctness is unverified. No edits applied or tests run.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "REQUIREMENTS:  \nThe function must return a list containing every value greater than or equal to zero, preserving original order and duplicates. It must not modify the input list. The function must handle edge cases, such as when the input is empty or contains zero.\n\nCAUSE:  \nThe implementation violates the requirement that the function must return values greater than or equal to zero. The current implementation filters values to those greater than zero, thereby excluding zero. The README.md states that the function should return values greater than or equal to zero, but the code incorrectly filters to values greater than zero.\n\nMISSING EVIDENCE:  \nNone needed for this diagnosis. The implementation does not include any logic to handle values equal to zero, which is required by the specification.",
+        "truncated": false,
+        "elapsed_seconds": 2.82,
+        "generated_tokens": 153,
+        "tokens_per_second": 59.91
+      },
+      {
+        "stage": "edit",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\nreturn [value for value in values if value > 0]\n<<<NEW>>>\nreturn [value for value in values if value >= 0]",
+        "truncated": false,
+        "elapsed_seconds": 1.17,
+        "generated_tokens": 40,
+        "tokens_per_second": 58.25
+      }
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "checks_passed",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\nreturn [value for value in values if value > 0]\n<<<NEW>>>\nreturn [value for value in values if value >= 0]",
+        "elapsed_seconds": 1.17
+      }
+    ],
+    "retry_count": 0,
+    "failure_kind": null,
+    "accepted_edit": {
+      "path": "pipeline.py",
+      "old_code": "return [value for value in values if value > 0]",
+      "new_code": "return [value for value in values if value >= 0]",
+      "explanation": "Model-proposed replacement; correctness requires review and tests."
+    },
+    "settings": {
+      "version": "0.6",
+      "think_by_stage": {
+        "diagnose": false,
+        "edit": false
+      },
+      "format": "omitted",
+      "num_ctx": 4096,
+      "diagnosis_token_limit": 2400,
+      "edit_token_limit": 1600,
+      "max_corrective_retries": 1
+    },
+    "elapsed_seconds": 3.99,
+    "output_tokens": 193
+  },
+  "model_seconds": 3.99,
+  "retry_count": 0,
+  "first_edit_status": "checks_passed",
+  "diff": "--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def nonnegative(values):\n-    return [value for value in values if value > 0]\n+    return [value for value in values if value >= 0]\n",
+  "public_check": "assert p.nonnegative([0,-2,3]) == [0,3]",
+  "public_before_retry": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.037
+  },
+  "behavioral_retry_count": 0,
+  "candidate_tests": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.021
+  }
+}

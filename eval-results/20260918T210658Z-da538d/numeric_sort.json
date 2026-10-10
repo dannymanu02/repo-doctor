@@ -1,0 +1,59 @@
+{
+  "case": "numeric_sort",
+  "category": "ordering",
+  "status": "repaired",
+  "issue": "pipeline.py sort_scores(['9', '100', '20']) places 100 before 9; scores should increase numerically.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-djd2g7pk/checks.py\", line 6, in <module>\n    assert p.sort_scores(['9','100','20']) == ['9','20','100']\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.041
+  },
+  "context": "FILE pipeline.py\n1: def sort_scores(scores):\n2:     return sorted(scores)\n\nFILE README.md\n1: sort_scores sorts integer strings by numeric value, returning the original strings in ascending order. Preserve duplicates.\n",
+  "result": {
+    "model": "qwen3:1.7b",
+    "edit_status": "checks_passed",
+    "output_truncated": false,
+    "raw_response": "DIAGNOSIS RESPONSE\nThe failure occurs because `sorted(scores)` uses lexicographical ordering (e.g., '100' < '9' due to '1' < '9' in ASCII). The missing evidence is the implementation that converts strings to integers for numerical sorting. The source code lacks a `key` function to ensure proper numeric ordering.\n\nEDIT RESPONSE\nFILE: pipeline.py\n<<<OLD>>>\nreturn sorted(scores)\n<<<NEW>>>\nreturn sorted(scores, key=lambda x: int(x))",
+    "answer": "### Diagnosis (model-generated)\nThe failure occurs because `sorted(scores)` uses lexicographical ordering (e.g., '100' < '9' due to '1' < '9' in ASCII). The missing evidence is the implementation that converts strings to integers for numerical sorting. The source code lacks a `key` function to ensure proper numeric ordering.\n\n### Proposed diff\n```diff\n--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def sort_scores(scores):\n-    return sorted(scores)\n+    return sorted(scores, key=lambda x: int(x))\n```\n\nSource-match and syntax checks passed. Semantic correctness is unverified. No edits applied or tests run.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "The failure occurs because `sorted(scores)` uses lexicographical ordering (e.g., '100' < '9' due to '1' < '9' in ASCII). The missing evidence is the implementation that converts strings to integers for numerical sorting. The source code lacks a `key` function to ensure proper numeric ordering.",
+        "truncated": false,
+        "elapsed_seconds": 6.41,
+        "generated_tokens": 352,
+        "tokens_per_second": 58.43
+      },
+      {
+        "stage": "edit",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\nreturn sorted(scores)\n<<<NEW>>>\nreturn sorted(scores, key=lambda x: int(x))",
+        "truncated": false,
+        "elapsed_seconds": 13.52,
+        "generated_tokens": 728,
+        "tokens_per_second": 56.08
+      }
+    ],
+    "settings": {
+      "version": "0.3",
+      "think": true,
+      "format": "omitted",
+      "num_ctx": 4096,
+      "num_predict_per_call": 1600
+    },
+    "elapsed_seconds": 19.94,
+    "output_tokens": 1080
+  },
+  "model_seconds": 19.94,
+  "diff": "--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def sort_scores(scores):\n-    return sorted(scores)\n+    return sorted(scores, key=lambda x: int(x))\n",
+  "candidate_tests": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.085
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "case": "numeric_sort",
+  "category": "ordering",
+  "status": "validation_rejected",
+  "issue": "pipeline.py sort_scores(['9', '100', '20']) places 100 before 9; scores should increase numerically.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-__2lamgf/checks.py\", line 6, in <module>\n    assert p.sort_scores(['9','100','20']) == ['9','20','100']\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.041
+  },
+  "context": "FILE pipeline.py\n1: def sort_scores(scores):\n2:     return sorted(scores)\n\nFILE README.md\n1: sort_scores sorts integer strings by numeric value, returning the original strings in ascending order. Preserve duplicates.\n",
+  "selection": [
+    {
+      "path": "pipeline.py",
+      "reason": "error match",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 2
+    },
+    {
+      "path": "README.md",
+      "reason": "documentation",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 1
+    }
+  ],
+  "retrieval_notes": [],
+  "result": {
+    "model": "qwen3:8b",
+    "edit_status": "rejected",
+    "output_truncated": false,
+    "raw_response": "DIAGNOSIS RESPONSE\nREQUIREMENTS: The `sort_scores` function must sort integer strings by their numeric value, returning the original strings in ascending order. This is documented in README.md line 1. It must preserve duplicates.\n\nCAUSE: The implementation uses `sorted(scores)`, which sorts the strings lexicographically, not numerically. For example, '100' is placed before '9' because '1' < '9' in string comparison, violating the numeric sorting requirement.\n\nMISSING EVIDENCE: None needed for this diagnosis.\n\nEDIT ATTEMPT 1\nFILE: pipeline.py\n<<<OLD>>>\n    return sorted(scores)\n<<<NEW>>>\n    return sorted(scores, key=lambda x: int(x))\n<<<END>>\n\nEDIT ATTEMPT 2\nFILE: pipeline.py\n<<<OLD>>>\n    return sorted(scores)\n<<<NEW>>>\n    return sorted(scores, key=int)\n<<<END>>",
+    "answer": "### Diagnosis (model-generated)\nREQUIREMENTS: The `sort_scores` function must sort integer strings by their numeric value, returning the original strings in ascending order. This is documented in README.md line 1. It must preserve duplicates.\n\nCAUSE: The implementation uses `sorted(scores)`, which sorts the strings lexicographically, not numerically. For example, '100' is placed before '9' because '1' < '9' in string comparison, violating the numeric sorting requirement.\n\nMISSING EVIDENCE: None needed for this diagnosis.\n\n### First edit rejected\nProposed Python code has invalid syntax: invalid syntax\n\n### No patch generated\nProposed Python code has invalid syntax: invalid syntax",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "REQUIREMENTS: The `sort_scores` function must sort integer strings by their numeric value, returning the original strings in ascending order. This is documented in README.md line 1. It must preserve duplicates.\n\nCAUSE: The implementation uses `sorted(scores)`, which sorts the strings lexicographically, not numerically. For example, '100' is placed before '9' because '1' < '9' in string comparison, violating the numeric sorting requirement.\n\nMISSING EVIDENCE: None needed for this diagnosis.",
+        "truncated": false,
+        "elapsed_seconds": 3.07,
+        "generated_tokens": 110,
+        "tokens_per_second": 39.3
+      },
+      {
+        "stage": "edit",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\n    return sorted(scores)\n<<<NEW>>>\n    return sorted(scores, key=lambda x: int(x))\n<<<END>>",
+        "truncated": false,
+        "elapsed_seconds": 1.22,
+        "generated_tokens": 34,
+        "tokens_per_second": 39.92
+      },
+      {
+        "stage": "edit_retry",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\n    return sorted(scores)\n<<<NEW>>>\n    return sorted(scores, key=int)\n<<<END>>",
+        "truncated": false,
+        "elapsed_seconds": 0.94,
+        "generated_tokens": 30,
+        "tokens_per_second": 40.53
+      }
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "validation_rejected",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\n    return sorted(scores)\n<<<NEW>>>\n    return sorted(scores, key=lambda x: int(x))\n<<<END>>",
+        "elapsed_seconds": 1.22,
+        "error": "Proposed Python code has invalid syntax: invalid syntax",
+        "retry_feedback": "Proposed Python code has invalid syntax: invalid syntax"
+      },
+      {
+        "attempt": 2,
+        "status": "validation_rejected",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\n    return sorted(scores)\n<<<NEW>>>\n    return sorted(scores, key=int)\n<<<END>>",
+        "elapsed_seconds": 0.94,
+        "error": "Proposed Python code has invalid syntax: invalid syntax"
+      }
+    ],
+    "retry_count": 1,
+    "failure_kind": "validation_rejected",
+    "accepted_edit": null,
+    "settings": {
+      "version": "0.6",
+      "think_by_stage": {
+        "diagnose": false,
+        "edit": false
+      },
+      "format": "omitted",
+      "num_ctx": 4096,
+      "diagnosis_token_limit": 2400,
+      "edit_token_limit": 1600,
+      "max_corrective_retries": 1
+    },
+    "error": "Proposed Python code has invalid syntax: invalid syntax",
+    "elapsed_seconds": 5.24,
+    "output_tokens": 174
+  },
+  "model_seconds": 5.24,
+  "retry_count": 1,
+  "first_edit_status": "validation_rejected",
+  "error": "Proposed Python code has invalid syntax: invalid syntax"
+}

@@ -1,0 +1,59 @@
+{
+  "case": "timeout_units",
+  "category": "cross_file",
+  "status": "repaired",
+  "issue": "pipeline.py timeout_seconds returns 2500, but the client expects 2.5 seconds. Check the configured timeout units.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-4j8mk9ia/checks.py\", line 8, in <module>\n    assert p.timeout_seconds() == expected\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.042
+  },
+  "context": "FILE pipeline.py\n1: from config import TIMEOUT_MS\n2: \n3: def timeout_seconds():\n4:     return TIMEOUT_MS\n\nFILE README.md\n1: The configuration stores TIMEOUT_MS in milliseconds. timeout_seconds must return seconds, including fractional seconds.\n\nFILE config.py\n1: TIMEOUT_MS = 2500\n",
+  "result": {
+    "model": "qwen3:1.7b",
+    "edit_status": "checks_passed",
+    "output_truncated": false,
+    "raw_response": "DIAGNOSIS RESPONSE\nThe `timeout_seconds()` function in `pipeline.py` returns `2500` (an integer) instead of `2.5` (a float), violating the expected type. The `TIMEOUT_MS` in `config.py` is defined as `2500` (milliseconds), but the function returns it as an integer, leading to a mismatch between expected (seconds, including fractions) and actual (milliseconds). The issue lies in the function's type conversion logic. Evidence missing: confirmation that the function returns a float or that the client expects a float.\n\nEDIT RESPONSE\nFILE: pipeline.py\n<<<OLD>>>\nreturn TIMEOUT_MS\n<<<NEW>>>\nreturn TIMEOUT_MS / 1000.0\n<<<END>>>",
+    "answer": "### Diagnosis (model-generated)\nThe `timeout_seconds()` function in `pipeline.py` returns `2500` (an integer) instead of `2.5` (a float), violating the expected type. The `TIMEOUT_MS` in `config.py` is defined as `2500` (milliseconds), but the function returns it as an integer, leading to a mismatch between expected (seconds, including fractions) and actual (milliseconds). The issue lies in the function's type conversion logic. Evidence missing: confirmation that the function returns a float or that the client expects a float.\n\n### Proposed diff\n```diff\n--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,4 +1,4 @@\n from config import TIMEOUT_MS\n \n def timeout_seconds():\n-    return TIMEOUT_MS\n+    return TIMEOUT_MS / 1000.0\n```\n\nSource-match and syntax checks passed. Semantic correctness is unverified. No edits applied or tests run.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "The `timeout_seconds()` function in `pipeline.py` returns `2500` (an integer) instead of `2.5` (a float), violating the expected type. The `TIMEOUT_MS` in `config.py` is defined as `2500` (milliseconds), but the function returns it as an integer, leading to a mismatch between expected (seconds, including fractions) and actual (milliseconds). The issue lies in the function's type conversion logic. Evidence missing: confirmation that the function returns a float or that the client expects a float.",
+        "truncated": false,
+        "elapsed_seconds": 11.09,
+        "generated_tokens": 617,
+        "tokens_per_second": 57.58
+      },
+      {
+        "stage": "edit",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\nreturn TIMEOUT_MS\n<<<NEW>>>\nreturn TIMEOUT_MS / 1000.0\n<<<END>>>",
+        "truncated": false,
+        "elapsed_seconds": 13.92,
+        "generated_tokens": 715,
+        "tokens_per_second": 53.89
+      }
+    ],
+    "settings": {
+      "version": "0.3",
+      "think": true,
+      "format": "omitted",
+      "num_ctx": 4096,
+      "num_predict_per_call": 1600
+    },
+    "elapsed_seconds": 25.02,
+    "output_tokens": 1332
+  },
+  "model_seconds": 25.02,
+  "diff": "--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,4 +1,4 @@\n from config import TIMEOUT_MS\n \n def timeout_seconds():\n-    return TIMEOUT_MS\n+    return TIMEOUT_MS / 1000.0\n",
+  "candidate_tests": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.041
+  }
+}

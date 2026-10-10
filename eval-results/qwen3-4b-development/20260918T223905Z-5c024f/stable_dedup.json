@@ -1,0 +1,52 @@
+{
+  "case": "stable_dedup",
+  "category": "collection_logic",
+  "status": "output_truncated",
+  "issue": "pipeline.py unique_labels(['b', 'a', 'b']) returns ['a', 'b']; the expected order is ['b', 'a'].",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-iisa6obv/checks.py\", line 6, in <module>\n    assert p.unique_labels(['b','a','b']) == ['b','a']\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.081
+  },
+  "context": "FILE pipeline.py\n1: def unique_labels(labels):\n2:     return sorted(set(labels))\n\nFILE README.md\n1: unique_labels removes duplicate strings while preserving first occurrence order. Empty input returns an empty list.\n",
+  "result": {
+    "model": "qwen3:4b",
+    "edit_status": "rejected",
+    "output_truncated": true,
+    "raw_response": "DIAGNOSIS RESPONSE\nREQUIREMENTS:  \nREADME.md states: \"unique_labels removes duplicate strings while preserving first occurrence order\". Thus, input `['b','a','b']` must return `['b','a']` (first occurrence of 'b' precedes 'a').\n\nCAUSE:  \nImplementation (pipeline.py, line 2) uses `sorted(set(labels))`, which sorts unique labels lexicographically (e.g., `'a' < 'b'`), violating the documented first-occurrence order preservation requirement.\n\nMISSING EVIDENCE:  \nNone needed for this diagnosis.\n\nEDIT RESPONSE\n",
+    "answer": "### Diagnosis (model-generated)\nREQUIREMENTS:  \nREADME.md states: \"unique_labels removes duplicate strings while preserving first occurrence order\". Thus, input `['b','a','b']` must return `['b','a']` (first occurrence of 'b' precedes 'a').\n\nCAUSE:  \nImplementation (pipeline.py, line 2) uses `sorted(set(labels))`, which sorts unique labels lexicographically (e.g., `'a' < 'b'`), violating the documented first-occurrence order preservation requirement.\n\nMISSING EVIDENCE:  \nNone needed for this diagnosis.\n\n### No patch generated\nEdit response was incomplete or empty. No patch generated.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "REQUIREMENTS:  \nREADME.md states: \"unique_labels removes duplicate strings while preserving first occurrence order\". Thus, input `['b','a','b']` must return `['b','a']` (first occurrence of 'b' precedes 'a').\n\nCAUSE:  \nImplementation (pipeline.py, line 2) uses `sorted(set(labels))`, which sorts unique labels lexicographically (e.g., `'a' < 'b'`), violating the documented first-occurrence order preservation requirement.\n\nMISSING EVIDENCE:  \nNone needed for this diagnosis.",
+        "truncated": false,
+        "elapsed_seconds": 69.05,
+        "generated_tokens": 982,
+        "tokens_per_second": 14.66
+      },
+      {
+        "stage": "edit",
+        "content": "",
+        "truncated": true,
+        "elapsed_seconds": 108.01,
+        "generated_tokens": 1600,
+        "tokens_per_second": 15.23
+      }
+    ],
+    "settings": {
+      "version": "0.4.1",
+      "think": true,
+      "format": "omitted",
+      "num_ctx": 4096,
+      "num_predict_per_call": 1600
+    },
+    "error": "Edit response was incomplete or empty. No patch generated.",
+    "elapsed_seconds": 177.08,
+    "output_tokens": 2582
+  },
+  "model_seconds": 177.08
+}

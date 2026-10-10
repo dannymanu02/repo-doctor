@@ -1,0 +1,21 @@
+{
+  "case": "numeric_strings",
+  "source_result": "/Users/manojdannana/Desktop/repo-doctor/eval-results/no-thinking-development/20260919T141706Z-44f666/numeric_strings.json",
+  "original_status": "execution_rejected",
+  "policy_change": "Added isinstance to allowed calls",
+  "model_rerun": false,
+  "candidate": {
+    "path": "pipeline.py",
+    "old_code": "return sum(values)",
+    "new_code": "return sum(int(s) for s in values) if isinstance(values, list) else 0",
+    "explanation": "Model-proposed replacement; correctness requires review and tests."
+  },
+  "status": "repaired",
+  "candidate_tests": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.043
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "case": "timeout_units",
+  "category": "cross_file",
+  "status": "fixture_verified",
+  "issue": "pipeline.py timeout_seconds returns 2500, but the client expects 2.5 seconds. Check the configured timeout units.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-3wuqg_pt/checks.py\", line 8, in <module>\n    assert p.timeout_seconds() == expected\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.02
+  }
+}

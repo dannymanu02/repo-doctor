@@ -1,0 +1,108 @@
+{
+  "case": "explicit_zero",
+  "category": "default_semantics",
+  "status": "tests_failed",
+  "issue": "pipeline.py retry_limit({'retries': 0}) returns 3, but explicitly configuring zero should disable retries.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-jn1dqwni/checks.py\", line 6, in <module>\n    assert p.retry_limit({'retries':0}) == 0\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.038
+  },
+  "context": "FILE pipeline.py\n1: def retry_limit(settings):\n2:     return settings.get('retries') or 3\n\nFILE README.md\n1: retry_limit returns the configured non-negative integer number of retries. Zero is valid. Use the default of 3 only when the retries key is absent. If present the value is always an integer.\n",
+  "selection": [
+    {
+      "path": "pipeline.py",
+      "reason": "error match",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 2
+    },
+    {
+      "path": "README.md",
+      "reason": "documentation",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 1
+    }
+  ],
+  "retrieval_notes": [],
+  "result": {
+    "model": "qwen3:1.7b",
+    "edit_status": "checks_passed",
+    "output_truncated": false,
+    "raw_response": "DIAGNOSIS RESPONSE\nREQUIREMENTS:  \nThe function `retry_limit` must return the configured number of retries, including zero. Zero should disable retries. The function must return 3 only when the `retries` key is absent. It must not return any value other than a non-negative integer.\n\nCAUSE:  \nThe implementation violates the requirement that zero should disable retries. The function returns 3 when `retries` is set to zero, which contradicts the stated behavior of zero disabling retries. The implementation does not correctly handle the case where `retries` is explicitly set to zero.\n\nMISSING EVIDENCE:  \nNone needed for this diagnosis. The implementation explicitly returns 3 when `retries` is zero, which violates the stated behavior of zero disabling retries.\n\nEDIT ATTEMPT 1\nFILE: pipeline.py\n<<<OLD>>>\nreturn settings.get('retries') or 3\n<<<NEW>>>\nreturn settings.get('retries') or 0",
+    "answer": "### Diagnosis (model-generated)\nREQUIREMENTS:  \nThe function `retry_limit` must return the configured number of retries, including zero. Zero should disable retries. The function must return 3 only when the `retries` key is absent. It must not return any value other than a non-negative integer.\n\nCAUSE:  \nThe implementation violates the requirement that zero should disable retries. The function returns 3 when `retries` is set to zero, which contradicts the stated behavior of zero disabling retries. The implementation does not correctly handle the case where `retries` is explicitly set to zero.\n\nMISSING EVIDENCE:  \nNone needed for this diagnosis. The implementation explicitly returns 3 when `retries` is zero, which violates the stated behavior of zero disabling retries.\n\n### Proposed diff\n```diff\n--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def retry_limit(settings):\n-    return settings.get('retries') or 3\n+    return settings.get('retries') or 0\n```\n\nSource-match and compilation checks passed. Semantic correctness is unverified. No edits applied or tests run.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "REQUIREMENTS:  \nThe function `retry_limit` must return the configured number of retries, including zero. Zero should disable retries. The function must return 3 only when the `retries` key is absent. It must not return any value other than a non-negative integer.\n\nCAUSE:  \nThe implementation violates the requirement that zero should disable retries. The function returns 3 when `retries` is set to zero, which contradicts the stated behavior of zero disabling retries. The implementation does not correctly handle the case where `retries` is explicitly set to zero.\n\nMISSING EVIDENCE:  \nNone needed for this diagnosis. The implementation explicitly returns 3 when `retries` is zero, which violates the stated behavior of zero disabling retries.",
+        "truncated": false,
+        "elapsed_seconds": 2.97,
+        "generated_tokens": 155,
+        "tokens_per_second": 58.09
+      },
+      {
+        "stage": "edit",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\nreturn settings.get('retries') or 3\n<<<NEW>>>\nreturn settings.get('retries') or 0",
+        "truncated": false,
+        "elapsed_seconds": 1.12,
+        "generated_tokens": 35,
+        "tokens_per_second": 57.68
+      }
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "checks_passed",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\nreturn settings.get('retries') or 3\n<<<NEW>>>\nreturn settings.get('retries') or 0",
+        "elapsed_seconds": 1.12
+      }
+    ],
+    "retry_count": 0,
+    "failure_kind": null,
+    "accepted_edit": {
+      "path": "pipeline.py",
+      "old_code": "return settings.get('retries') or 3",
+      "new_code": "return settings.get('retries') or 0",
+      "explanation": "Model-proposed replacement; correctness requires review and tests."
+    },
+    "settings": {
+      "version": "0.6",
+      "think_by_stage": {
+        "diagnose": false,
+        "edit": false
+      },
+      "format": "omitted",
+      "num_ctx": 4096,
+      "diagnosis_token_limit": 2400,
+      "edit_token_limit": 1600,
+      "max_corrective_retries": 1
+    },
+    "elapsed_seconds": 4.09,
+    "output_tokens": 190
+  },
+  "model_seconds": 4.09,
+  "retry_count": 0,
+  "first_edit_status": "checks_passed",
+  "diff": "--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def retry_limit(settings):\n-    return settings.get('retries') or 3\n+    return settings.get('retries') or 0\n",
+  "public_check": "assert p.retry_limit({'retries':0}) == 0",
+  "public_before_retry": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.043
+  },
+  "behavioral_retry_count": 0,
+  "candidate_tests": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-tc6qaecq/checks.py\", line 7, in <module>\n    assert p.retry_limit({}) == 3\n           ^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.021
+  }
+}

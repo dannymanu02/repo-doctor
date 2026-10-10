@@ -1,0 +1,53 @@
+{
+  "case": "stable_dedup",
+  "category": "collection_logic",
+  "status": "execution_rejected",
+  "issue": "pipeline.py unique_labels(['b', 'a', 'b']) returns ['a', 'b']; the expected order is ['b', 'a'].",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-57gm62y4/checks.py\", line 6, in <module>\n    assert p.unique_labels(['b','a','b']) == ['b','a']\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.039
+  },
+  "context": "FILE pipeline.py\n1: def unique_labels(labels):\n2:     return sorted(set(labels))\n\nFILE README.md\n1: unique_labels removes duplicate strings while preserving first occurrence order. Empty input returns an empty list.\n",
+  "result": {
+    "model": "qwen3:1.7b",
+    "edit_status": "checks_passed",
+    "output_truncated": false,
+    "raw_response": "DIAGNOSIS RESPONSE\nREQUIREMENTS: The function must return unique elements in the order of their first occurrence. Empty input returns empty list. For input ['b', 'a', 'b'], the output must be ['b', 'a'].  \n\nCAUSE: The implementation uses `sorted(set(labels))`, which sorts elements in ascending order, violating the requirement to preserve first occurrence order. The sorted() function causes the output to be ['a', 'b'] instead of ['b', 'a'], as the set removes duplicates and sorted() prioritizes ASCII values.  \n\nMISSING EVIDENCE: The implementation uses `sorted(set(labels))` instead of maintaining the original order. The supplied material does not provide alternative implementations or logic to preserve first occurrence order.\n\nEDIT RESPONSE\nFILE: pipeline.py\n<<<OLD>>>\nreturn sorted(set(labels))\n<<<NEW>>>\nseen = set()\nresult = []\nfor label in labels:\n    if label not in seen:\n        seen.add(label)\n        result.append(label)\nreturn result",
+    "answer": "### Diagnosis (model-generated)\nREQUIREMENTS: The function must return unique elements in the order of their first occurrence. Empty input returns empty list. For input ['b', 'a', 'b'], the output must be ['b', 'a'].  \n\nCAUSE: The implementation uses `sorted(set(labels))`, which sorts elements in ascending order, violating the requirement to preserve first occurrence order. The sorted() function causes the output to be ['a', 'b'] instead of ['b', 'a'], as the set removes duplicates and sorted() prioritizes ASCII values.  \n\nMISSING EVIDENCE: The implementation uses `sorted(set(labels))` instead of maintaining the original order. The supplied material does not provide alternative implementations or logic to preserve first occurrence order.\n\n### Proposed diff\n```diff\n--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,8 @@\n def unique_labels(labels):\n-    return sorted(set(labels))\n+    seen = set()\n+result = []\n+for label in labels:\n+    if label not in seen:\n+        seen.add(label)\n+        result.append(label)\n+return result\n```\n\nSource-match and syntax checks passed. Semantic correctness is unverified. No edits applied or tests run.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "REQUIREMENTS: The function must return unique elements in the order of their first occurrence. Empty input returns empty list. For input ['b', 'a', 'b'], the output must be ['b', 'a'].  \n\nCAUSE: The implementation uses `sorted(set(labels))`, which sorts elements in ascending order, violating the requirement to preserve first occurrence order. The sorted() function causes the output to be ['a', 'b'] instead of ['b', 'a'], as the set removes duplicates and sorted() prioritizes ASCII values.  \n\nMISSING EVIDENCE: The implementation uses `sorted(set(labels))` instead of maintaining the original order. The supplied material does not provide alternative implementations or logic to preserve first occurrence order.",
+        "truncated": false,
+        "elapsed_seconds": 8.86,
+        "generated_tokens": 491,
+        "tokens_per_second": 59.29
+      },
+      {
+        "stage": "edit",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\nreturn sorted(set(labels))\n<<<NEW>>>\nseen = set()\nresult = []\nfor label in labels:\n    if label not in seen:\n        seen.add(label)\n        result.append(label)\nreturn result",
+        "truncated": false,
+        "elapsed_seconds": 11.13,
+        "generated_tokens": 629,
+        "tokens_per_second": 60.55
+      }
+    ],
+    "settings": {
+      "version": "0.4",
+      "think": true,
+      "format": "omitted",
+      "num_ctx": 4096,
+      "num_predict_per_call": 1600
+    },
+    "elapsed_seconds": 19.99,
+    "output_tokens": 1120
+  },
+  "model_seconds": 19.99,
+  "diff": "--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,8 @@\n def unique_labels(labels):\n-    return sorted(set(labels))\n+    seen = set()\n+result = []\n+for label in labels:\n+    if label not in seen:\n+        seen.add(label)\n+        result.append(label)\n+return result\n",
+  "error": "Unsupported attribute: add"
+}

@@ -1,0 +1,59 @@
+{
+  "case": "filter_boundary",
+  "category": "filter_contract",
+  "status": "repaired",
+  "issue": "pipeline.py nonnegative([0, -2, 3]) drops zero, producing [3] instead of [0, 3].",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-vf3klls4/checks.py\", line 7, in <module>\n    assert p.nonnegative(values) == [0,3]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.021
+  },
+  "context": "FILE pipeline.py\n1: def nonnegative(values):\n2:     return [value for value in values if value > 0]\n\nFILE README.md\n1: nonnegative returns a new list containing every value greater than or equal to zero. Preserve original order and duplicates; do not modify the input list. Values are integers.\n",
+  "result": {
+    "model": "qwen3:1.7b",
+    "edit_status": "checks_passed",
+    "output_truncated": false,
+    "raw_response": "DIAGNOSIS RESPONSE\nREQUIREMENTS:  \n- `nonnegative([0, -2, 3])` must return `[0, 3]` (preserve zero).  \n- Must return values >= 0, preserving original order and duplicates.  \n- Do not modify the input list.  \n\nCAUSE:  \nThe implementation violates the requirement to include zeros by filtering values > 0. The code `[value for value in values if value > 0]` excludes zeros, contradicting the README.md's stated behavior of returning values >= 0.  \n\nMISSING EVIDENCE:  \nThe supplied material does not show how the function handles zeros. The README.md explicitly states it should include zeros, but the implementation does not comply.\n\nEDIT RESPONSE\nFILE: pipeline.py\n<<<OLD>>>\n[value for value in values if value > 0]\n<<<NEW>>>\n[value for value in values if value >= 0]\n<<<END>>>",
+    "answer": "### Diagnosis (model-generated)\nREQUIREMENTS:  \n- `nonnegative([0, -2, 3])` must return `[0, 3]` (preserve zero).  \n- Must return values >= 0, preserving original order and duplicates.  \n- Do not modify the input list.  \n\nCAUSE:  \nThe implementation violates the requirement to include zeros by filtering values > 0. The code `[value for value in values if value > 0]` excludes zeros, contradicting the README.md's stated behavior of returning values >= 0.  \n\nMISSING EVIDENCE:  \nThe supplied material does not show how the function handles zeros. The README.md explicitly states it should include zeros, but the implementation does not comply.\n\n### Proposed diff\n```diff\n--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def nonnegative(values):\n-    return [value for value in values if value > 0]\n+    return [value for value in values if value >= 0]\n```\n\nSource-match and syntax checks passed. Semantic correctness is unverified. No edits applied or tests run.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "REQUIREMENTS:  \n- `nonnegative([0, -2, 3])` must return `[0, 3]` (preserve zero).  \n- Must return values >= 0, preserving original order and duplicates.  \n- Do not modify the input list.  \n\nCAUSE:  \nThe implementation violates the requirement to include zeros by filtering values > 0. The code `[value for value in values if value > 0]` excludes zeros, contradicting the README.md's stated behavior of returning values >= 0.  \n\nMISSING EVIDENCE:  \nThe supplied material does not show how the function handles zeros. The README.md explicitly states it should include zeros, but the implementation does not comply.",
+        "truncated": false,
+        "elapsed_seconds": 11.4,
+        "generated_tokens": 373,
+        "tokens_per_second": 35.37
+      },
+      {
+        "stage": "edit",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\n[value for value in values if value > 0]\n<<<NEW>>>\n[value for value in values if value >= 0]\n<<<END>>>",
+        "truncated": false,
+        "elapsed_seconds": 14.03,
+        "generated_tokens": 438,
+        "tokens_per_second": 34.64
+      }
+    ],
+    "settings": {
+      "version": "0.4.1",
+      "think": true,
+      "format": "omitted",
+      "num_ctx": 4096,
+      "num_predict_per_call": 1600
+    },
+    "elapsed_seconds": 25.45,
+    "output_tokens": 811
+  },
+  "model_seconds": 25.45,
+  "diff": "--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def nonnegative(values):\n-    return [value for value in values if value > 0]\n+    return [value for value in values if value >= 0]\n",
+  "candidate_tests": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.084
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "case": "filter_boundary",
+  "category": "filter_contract",
+  "status": "repaired",
+  "issue": "pipeline.py nonnegative([0, -2, 3]) drops zero, producing [3] instead of [0, 3].",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-57mvmhtc/checks.py\", line 7, in <module>\n    assert p.nonnegative(values) == [0,3]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.04
+  },
+  "context": "FILE pipeline.py\n1: def nonnegative(values):\n2:     return [value for value in values if value > 0]\n\nFILE README.md\n1: nonnegative returns a new list containing every value greater than or equal to zero. Preserve original order and duplicates; do not modify the input list. Values are integers.\n",
+  "result": {
+    "model": "qwen3:1.7b",
+    "edit_status": "checks_passed",
+    "output_truncated": false,
+    "raw_response": "DIAGNOSIS RESPONSE\nREQUIREMENTS: The function must return values >= 0, preserving original order and duplicates. It must not modify the input list. The implementation must include 0s in the output.  \n\nCAUSE: The implementation violates the requirement by filtering values > 0, excluding 0s. The README.md explicitly states that nonnegative should return values >= 0, which the current code does not fulfill.  \n\nMISSING EVIDENCE: The implementation does not handle 0s as required, which is documented in the README.md.\n\nEDIT RESPONSE\nFILE: pipeline.py\n<<<OLD>>>\nreturn [value for value in values if value > 0]\n<<<NEW>>>\nreturn [value for value in values if value >= 0]",
+    "answer": "### Diagnosis (model-generated)\nREQUIREMENTS: The function must return values >= 0, preserving original order and duplicates. It must not modify the input list. The implementation must include 0s in the output.  \n\nCAUSE: The implementation violates the requirement by filtering values > 0, excluding 0s. The README.md explicitly states that nonnegative should return values >= 0, which the current code does not fulfill.  \n\nMISSING EVIDENCE: The implementation does not handle 0s as required, which is documented in the README.md.\n\n### Proposed diff\n```diff\n--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def nonnegative(values):\n-    return [value for value in values if value > 0]\n+    return [value for value in values if value >= 0]\n```\n\nSource-match and syntax checks passed. Semantic correctness is unverified. No edits applied or tests run.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "REQUIREMENTS: The function must return values >= 0, preserving original order and duplicates. It must not modify the input list. The implementation must include 0s in the output.  \n\nCAUSE: The implementation violates the requirement by filtering values > 0, excluding 0s. The README.md explicitly states that nonnegative should return values >= 0, which the current code does not fulfill.  \n\nMISSING EVIDENCE: The implementation does not handle 0s as required, which is documented in the README.md.",
+        "truncated": false,
+        "elapsed_seconds": 11.69,
+        "generated_tokens": 311,
+        "tokens_per_second": 28.75
+      },
+      {
+        "stage": "edit",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\nreturn [value for value in values if value > 0]\n<<<NEW>>>\nreturn [value for value in values if value >= 0]",
+        "truncated": false,
+        "elapsed_seconds": 18.05,
+        "generated_tokens": 511,
+        "tokens_per_second": 30.76
+      }
+    ],
+    "settings": {
+      "version": "0.4",
+      "think": true,
+      "format": "omitted",
+      "num_ctx": 4096,
+      "num_predict_per_call": 1600
+    },
+    "elapsed_seconds": 29.75,
+    "output_tokens": 822
+  },
+  "model_seconds": 29.75,
+  "diff": "--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def nonnegative(values):\n-    return [value for value in values if value > 0]\n+    return [value for value in values if value >= 0]\n",
+  "candidate_tests": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.137
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "case": "numeric_sort",
+  "category": "ordering",
+  "status": "fixture_verified",
+  "issue": "pipeline.py sort_scores(['9', '100', '20']) places 100 before 9; scores should increase numerically.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-94afh2et/checks.py\", line 6, in <module>\n    assert p.sort_scores(['9','100','20']) == ['9','20','100']\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.021
+  }
+}

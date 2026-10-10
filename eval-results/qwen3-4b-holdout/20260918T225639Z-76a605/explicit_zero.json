@@ -1,0 +1,44 @@
+{
+  "case": "explicit_zero",
+  "category": "default_semantics",
+  "status": "output_truncated",
+  "issue": "pipeline.py retry_limit({'retries': 0}) returns 3, but explicitly configuring zero should disable retries.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-tghnyg85/checks.py\", line 6, in <module>\n    assert p.retry_limit({'retries':0}) == 0\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.084
+  },
+  "context": "FILE pipeline.py\n1: def retry_limit(settings):\n2:     return settings.get('retries') or 3\n\nFILE README.md\n1: retry_limit returns the configured non-negative integer number of retries. Zero is valid. Use the default of 3 only when the retries key is absent. If present the value is always an integer.\n",
+  "result": {
+    "model": "qwen3:4b",
+    "edit_status": "rejected",
+    "output_truncated": true,
+    "raw_response": "DIAGNOSIS RESPONSE\n",
+    "answer": "### Diagnosis (model-generated)\n\n\n### No patch generated\nDiagnosis was incomplete or empty. Edit generation was skipped.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "",
+        "truncated": true,
+        "elapsed_seconds": 111.17,
+        "generated_tokens": 1600,
+        "tokens_per_second": 14.54
+      }
+    ],
+    "settings": {
+      "version": "0.4.1",
+      "think": true,
+      "format": "omitted",
+      "num_ctx": 4096,
+      "num_predict_per_call": 1600
+    },
+    "error": "Diagnosis was incomplete or empty. Edit generation was skipped.",
+    "elapsed_seconds": 111.18,
+    "output_tokens": 1600
+  },
+  "model_seconds": 111.18
+}

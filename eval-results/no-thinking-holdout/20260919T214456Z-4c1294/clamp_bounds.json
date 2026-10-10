@@ -1,0 +1,111 @@
+{
+  "case": "clamp_bounds",
+  "category": "boundary_contract",
+  "status": "validation_rejected",
+  "issue": "pipeline.py clamp_score(130) returns 130, but scores above the allowed range should return 100.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-y3_kc8b7/checks.py\", line 6, in <module>\n    assert p.clamp_score(130) == 100\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.041
+  },
+  "context": "FILE pipeline.py\n1: def clamp_score(score):\n2:     return max(0, score)\n\nFILE README.md\n1: clamp_score limits numeric scores to the inclusive range 0 through 100. Values inside the range are unchanged. Negative values become zero.\n",
+  "selection": [
+    {
+      "path": "pipeline.py",
+      "reason": "error match",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 2
+    },
+    {
+      "path": "README.md",
+      "reason": "documentation",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 1
+    }
+  ],
+  "retrieval_notes": [],
+  "result": {
+    "model": "qwen3:1.7b",
+    "edit_status": "checks_passed",
+    "output_truncated": false,
+    "raw_response": "DIAGNOSIS RESPONSE\nREQUIREMENTS:  \n- `clamp_score(0)` returns 0  \n- `clamp_score(100)` returns 100  \n- `clamp_score(130)` returns 100  \n- `clamp_score(-5)` returns 0  \n- `clamp_score(50)` returns 50  \n- `clamp_score(101)` returns 100  \n- `clamp_score(99)` returns 99  \n\nCAUSE:  \nThe implementation violates the requirement that scores above 100 should return 100. The current implementation uses `max(0, score)`, which returns the maximum of 0 and the input score, but does not limit the score to 100. Thus, values above 100 are not clamped to 100 as required.\n\nMISSING EVIDENCE:  \nNone needed for this diagnosis.\n\nEDIT ATTEMPT 1\nFILE: pipeline.py\n<<<OLD>>>\nreturn max(0, score)\n<<<NEW>>>\nreturn max(100, score)",
+    "answer": "### Diagnosis (model-generated)\nREQUIREMENTS:  \n- `clamp_score(0)` returns 0  \n- `clamp_score(100)` returns 100  \n- `clamp_score(130)` returns 100  \n- `clamp_score(-5)` returns 0  \n- `clamp_score(50)` returns 50  \n- `clamp_score(101)` returns 100  \n- `clamp_score(99)` returns 99  \n\nCAUSE:  \nThe implementation violates the requirement that scores above 100 should return 100. The current implementation uses `max(0, score)`, which returns the maximum of 0 and the input score, but does not limit the score to 100. Thus, values above 100 are not clamped to 100 as required.\n\nMISSING EVIDENCE:  \nNone needed for this diagnosis.\n\n### Proposed diff\n```diff\n--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def clamp_score(score):\n-    return max(0, score)\n+    return max(100, score)\n```\n\nSource-match and compilation checks passed. Semantic correctness is unverified. No edits applied or tests run.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "REQUIREMENTS:  \n- `clamp_score(0)` returns 0  \n- `clamp_score(100)` returns 100  \n- `clamp_score(130)` returns 100  \n- `clamp_score(-5)` returns 0  \n- `clamp_score(50)` returns 50  \n- `clamp_score(101)` returns 100  \n- `clamp_score(99)` returns 99  \n\nCAUSE:  \nThe implementation violates the requirement that scores above 100 should return 100. The current implementation uses `max(0, score)`, which returns the maximum of 0 and the input score, but does not limit the score to 100. Thus, values above 100 are not clamped to 100 as required.\n\nMISSING EVIDENCE:  \nNone needed for this diagnosis.",
+        "truncated": false,
+        "elapsed_seconds": 6.47,
+        "generated_tokens": 191,
+        "tokens_per_second": 61.46
+      },
+      {
+        "stage": "edit",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\nreturn max(0, score)\n<<<NEW>>>\nreturn max(100, score)",
+        "truncated": false,
+        "elapsed_seconds": 1.46,
+        "generated_tokens": 30,
+        "tokens_per_second": 60.52
+      }
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "checks_passed",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\nreturn max(0, score)\n<<<NEW>>>\nreturn max(100, score)",
+        "elapsed_seconds": 1.46
+      }
+    ],
+    "retry_count": 0,
+    "failure_kind": null,
+    "accepted_edit": {
+      "path": "pipeline.py",
+      "old_code": "return max(0, score)",
+      "new_code": "return max(100, score)",
+      "explanation": "Model-proposed replacement; correctness requires review and tests."
+    },
+    "settings": {
+      "version": "0.6",
+      "think_by_stage": {
+        "diagnose": false,
+        "edit": false
+      },
+      "format": "omitted",
+      "num_ctx": 4096,
+      "diagnosis_token_limit": 2400,
+      "edit_token_limit": 1600,
+      "max_corrective_retries": 1
+    },
+    "elapsed_seconds": 7.94,
+    "output_tokens": 221
+  },
+  "model_seconds": 9.05,
+  "retry_count": 0,
+  "first_edit_status": "checks_passed",
+  "diff": "--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def clamp_score(score):\n-    return max(0, score)\n+    return max(100, score)\n",
+  "public_check": "assert p.clamp_score(130) == 100",
+  "public_before_retry": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-2idxqxnx/checks.py\", line 6, in <module>\n    assert p.clamp_score(130) == 100\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.077
+  },
+  "behavioral_retry_count": 1,
+  "initial_diff": "--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def clamp_score(score):\n-    return max(0, score)\n+    return max(100, score)\n",
+  "behavioral_retry_prompt": "FAILURE:\npipeline.py clamp_score(130) returns 130, but scores above the allowed range should return 100.\nORIGINAL SOURCE EXCERPTS:\nFILE pipeline.py\n1: def clamp_score(score):\n2:     return max(0, score)\n\nFILE README.md\n1: clamp_score limits numeric scores to the inclusive range 0 through 100. Values inside the range are unchanged. Negative values become zero.\n\nPREVIOUS REJECTED-BY-TEST EDIT:\n{\"path\": \"pipeline.py\", \"old_code\": \"return max(0, score)\", \"new_code\": \"return max(100, score)\", \"explanation\": \"Model-proposed replacement; correctness requires review and tests.\"}\nPUBLIC REPRODUCTION CHECK:\nassert p.clamp_score(130) == 100\nTEST FAILURE (untrusted output):\nTraceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-2idxqxnx/checks.py\", line 6, in <module>\n    assert p.clamp_score(130) == 100\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n\nThe test ran on a temporary candidate. Original files have been restored. Propose one replacement against ORIGINAL source. Fix the cause and preserve the documented behavior. Use the edit section format or NO_EDIT. This is the only test-feedback retry. No hidden test results are supplied.",
+  "behavioral_retry_response": {
+    "content": "FILE: pipeline.py\n<<<OLD>>>\nreturn max(0, score)\n<<<NEW>>>\nreturn max(100, score)\n<<<END>>",
+    "truncated": false,
+    "elapsed_seconds": 1.11,
+    "generated_tokens": 33,
+    "tokens_per_second": 60.48
+  },
+  "error": "Proposed Python code has invalid syntax: invalid syntax"
+}

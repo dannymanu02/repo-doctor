@@ -1,0 +1,108 @@
+{
+  "case": "explicit_zero",
+  "category": "default_semantics",
+  "status": "repaired",
+  "issue": "pipeline.py retry_limit({'retries': 0}) returns 3, but explicitly configuring zero should disable retries.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-nozvgo1m/checks.py\", line 6, in <module>\n    assert p.retry_limit({'retries':0}) == 0\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.021
+  },
+  "context": "FILE pipeline.py\n1: def retry_limit(settings):\n2:     return settings.get('retries') or 3\n\nFILE README.md\n1: retry_limit returns the configured non-negative integer number of retries. Zero is valid. Use the default of 3 only when the retries key is absent. If present the value is always an integer.\n",
+  "selection": [
+    {
+      "path": "pipeline.py",
+      "reason": "error match",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 2
+    },
+    {
+      "path": "README.md",
+      "reason": "documentation",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 1
+    }
+  ],
+  "retrieval_notes": [],
+  "result": {
+    "model": "qwen3:8b",
+    "edit_status": "checks_passed",
+    "output_truncated": false,
+    "raw_response": "DIAGNOSIS RESPONSE\nREQUIREMENTS: The `retry_limit` function must return the configured number of retries, including zero. If 'retries' is present, it must return that value. If absent, return 3. (README.md:1)\n\nCAUSE: The implementation returns 3 when 'retries' is 0, violating the requirement that zero is valid and should be returned as-is.\n\nMISSING EVIDENCE: None needed for this diagnosis.\n\nEDIT ATTEMPT 1\nFILE: pipeline.py\n<<<OLD>>>\n    return settings.get('retries') or 3\n<<<NEW>>>\n    return settings.get('retries', 3)\n<<<END>>",
+    "answer": "### Diagnosis (model-generated)\nREQUIREMENTS: The `retry_limit` function must return the configured number of retries, including zero. If 'retries' is present, it must return that value. If absent, return 3. (README.md:1)\n\nCAUSE: The implementation returns 3 when 'retries' is 0, violating the requirement that zero is valid and should be returned as-is.\n\nMISSING EVIDENCE: None needed for this diagnosis.\n\n### Proposed diff\n```diff\n--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def retry_limit(settings):\n-    return settings.get('retries') or 3\n+    return settings.get('retries', 3)\n```\n\nSource-match and compilation checks passed. Semantic correctness is unverified. No edits applied or tests run.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "REQUIREMENTS: The `retry_limit` function must return the configured number of retries, including zero. If 'retries' is present, it must return that value. If absent, return 3. (README.md:1)\n\nCAUSE: The implementation returns 3 when 'retries' is 0, violating the requirement that zero is valid and should be returned as-is.\n\nMISSING EVIDENCE: None needed for this diagnosis.",
+        "truncated": false,
+        "elapsed_seconds": 2.64,
+        "generated_tokens": 92,
+        "tokens_per_second": 39.32
+      },
+      {
+        "stage": "edit",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\n    return settings.get('retries') or 3\n<<<NEW>>>\n    return settings.get('retries', 3)\n<<<END>>",
+        "truncated": false,
+        "elapsed_seconds": 1.43,
+        "generated_tokens": 40,
+        "tokens_per_second": 39.85
+      }
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "checks_passed",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\n    return settings.get('retries') or 3\n<<<NEW>>>\n    return settings.get('retries', 3)\n<<<END>>",
+        "elapsed_seconds": 1.43
+      }
+    ],
+    "retry_count": 0,
+    "failure_kind": null,
+    "accepted_edit": {
+      "path": "pipeline.py",
+      "old_code": "    return settings.get('retries') or 3",
+      "new_code": "    return settings.get('retries', 3)",
+      "explanation": "Model-proposed replacement; correctness requires review and tests."
+    },
+    "settings": {
+      "version": "0.6",
+      "think_by_stage": {
+        "diagnose": false,
+        "edit": false
+      },
+      "format": "omitted",
+      "num_ctx": 4096,
+      "diagnosis_token_limit": 2400,
+      "edit_token_limit": 1600,
+      "max_corrective_retries": 1
+    },
+    "elapsed_seconds": 4.07,
+    "output_tokens": 132
+  },
+  "model_seconds": 4.07,
+  "retry_count": 0,
+  "first_edit_status": "checks_passed",
+  "diff": "--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def retry_limit(settings):\n-    return settings.get('retries') or 3\n+    return settings.get('retries', 3)\n",
+  "public_check": "assert p.retry_limit({'retries':0}) == 0",
+  "public_before_retry": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.024
+  },
+  "behavioral_retry_count": 0,
+  "candidate_tests": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.018
+  }
+}

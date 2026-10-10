@@ -1,0 +1,15 @@
+{
+  "case": "numeric_strings",
+  "category": "type_conversion",
+  "status": "fixture_verified",
+  "issue": "pipeline.py total_units(['2', '10']) raises TypeError rather than returning 12.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-6fyc78v0/checks.py\", line 6, in <module>\n    assert p.total_units(['2','10']) == 12\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-eval-95k9niye/repo/pipeline.py\", line 2, in total_units\n    return sum(values)\n           ^^^^^^^^^^^\nTypeError: unsupported operand type(s) for +: 'int' and 'str'\n",
+    "seconds": 0.02
+  }
+}

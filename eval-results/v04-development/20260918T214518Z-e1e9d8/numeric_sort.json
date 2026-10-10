@@ -1,0 +1,59 @@
+{
+  "case": "numeric_sort",
+  "category": "ordering",
+  "status": "repaired",
+  "issue": "pipeline.py sort_scores(['9', '100', '20']) places 100 before 9; scores should increase numerically.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-2jy6mwrg/checks.py\", line 6, in <module>\n    assert p.sort_scores(['9','100','20']) == ['9','20','100']\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.079
+  },
+  "context": "FILE pipeline.py\n1: def sort_scores(scores):\n2:     return sorted(scores)\n\nFILE README.md\n1: sort_scores sorts integer strings by numeric value, returning the original strings in ascending order. Preserve duplicates.\n",
+  "result": {
+    "model": "qwen3:1.7b",
+    "edit_status": "checks_passed",
+    "output_truncated": false,
+    "raw_response": "DIAGNOSIS RESPONSE\nREQUIREMENTS:  \n- The function should sort integer strings by their numeric value (e.g., \"9\" < \"100\" < \"20\" \u2192 [\"9\", \"20\", \"100\"]).  \n- Preserve original string order for duplicates.  \n- Sort lexicographically if numeric values are equal (e.g., \"10\" < \"100\").  \n\nCAUSE:  \nThe implementation uses `sorted(scores)`, which compares strings lexicographically (e.g., \"9\" < \"100\" due to shorter length). The requirement specifies numeric sorting, but the code does not convert strings to integers or use numeric comparison. This violates the stated behavior.  \n\nMISSING EVIDENCE:  \n- The code does not convert strings to integers before sorting, which is necessary for numeric ordering.  \n- The documentation does not explicitly state that the function should perform numeric sorting, but the implementation fails to do so.\n\nEDIT RESPONSE\nFILE: pipeline.py\n<<<OLD>>>\nreturn sorted(scores)\n<<<NEW>>>\nreturn sorted(scores, key=int)",
+    "answer": "### Diagnosis (model-generated)\nREQUIREMENTS:  \n- The function should sort integer strings by their numeric value (e.g., \"9\" < \"100\" < \"20\" \u2192 [\"9\", \"20\", \"100\"]).  \n- Preserve original string order for duplicates.  \n- Sort lexicographically if numeric values are equal (e.g., \"10\" < \"100\").  \n\nCAUSE:  \nThe implementation uses `sorted(scores)`, which compares strings lexicographically (e.g., \"9\" < \"100\" due to shorter length). The requirement specifies numeric sorting, but the code does not convert strings to integers or use numeric comparison. This violates the stated behavior.  \n\nMISSING EVIDENCE:  \n- The code does not convert strings to integers before sorting, which is necessary for numeric ordering.  \n- The documentation does not explicitly state that the function should perform numeric sorting, but the implementation fails to do so.\n\n### Proposed diff\n```diff\n--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def sort_scores(scores):\n-    return sorted(scores)\n+    return sorted(scores, key=int)\n```\n\nSource-match and syntax checks passed. Semantic correctness is unverified. No edits applied or tests run.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "REQUIREMENTS:  \n- The function should sort integer strings by their numeric value (e.g., \"9\" < \"100\" < \"20\" \u2192 [\"9\", \"20\", \"100\"]).  \n- Preserve original string order for duplicates.  \n- Sort lexicographically if numeric values are equal (e.g., \"10\" < \"100\").  \n\nCAUSE:  \nThe implementation uses `sorted(scores)`, which compares strings lexicographically (e.g., \"9\" < \"100\" due to shorter length). The requirement specifies numeric sorting, but the code does not convert strings to integers or use numeric comparison. This violates the stated behavior.  \n\nMISSING EVIDENCE:  \n- The code does not convert strings to integers before sorting, which is necessary for numeric ordering.  \n- The documentation does not explicitly state that the function should perform numeric sorting, but the implementation fails to do so.",
+        "truncated": false,
+        "elapsed_seconds": 11.28,
+        "generated_tokens": 638,
+        "tokens_per_second": 58.28
+      },
+      {
+        "stage": "edit",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\nreturn sorted(scores)\n<<<NEW>>>\nreturn sorted(scores, key=int)",
+        "truncated": false,
+        "elapsed_seconds": 8.78,
+        "generated_tokens": 469,
+        "tokens_per_second": 59.85
+      }
+    ],
+    "settings": {
+      "version": "0.4",
+      "think": true,
+      "format": "omitted",
+      "num_ctx": 4096,
+      "num_predict_per_call": 1600
+    },
+    "elapsed_seconds": 20.07,
+    "output_tokens": 1107
+  },
+  "model_seconds": 20.07,
+  "diff": "--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def sort_scores(scores):\n-    return sorted(scores)\n+    return sorted(scores, key=int)\n",
+  "candidate_tests": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.078
+  }
+}

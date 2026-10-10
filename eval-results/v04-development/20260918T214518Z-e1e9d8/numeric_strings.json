@@ -1,0 +1,44 @@
+{
+  "case": "numeric_strings",
+  "category": "type_conversion",
+  "status": "output_truncated",
+  "issue": "pipeline.py total_units(['2', '10']) raises TypeError rather than returning 12.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-ts7dw45o/checks.py\", line 6, in <module>\n    assert p.total_units(['2','10']) == 12\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-eval-xk1j42hn/repo/pipeline.py\", line 2, in total_units\n    return sum(values)\n           ^^^^^^^^^^^\nTypeError: unsupported operand type(s) for +: 'int' and 'str'\n",
+    "seconds": 0.045
+  },
+  "context": "FILE pipeline.py\n1: def total_units(values):\n2:     return sum(values)\n\nFILE README.md\n1: total_units sums a list of base-10 integer strings. Empty input returns zero. Negative integers are supported.\n",
+  "result": {
+    "model": "qwen3:1.7b",
+    "edit_status": "rejected",
+    "output_truncated": true,
+    "raw_response": "DIAGNOSIS RESPONSE\n",
+    "answer": "### Diagnosis (model-generated)\n\n\n### No patch generated\nDiagnosis was incomplete or empty. Edit generation was skipped.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "",
+        "truncated": true,
+        "elapsed_seconds": 28.97,
+        "generated_tokens": 1600,
+        "tokens_per_second": 56.34
+      }
+    ],
+    "settings": {
+      "version": "0.4",
+      "think": true,
+      "format": "omitted",
+      "num_ctx": 4096,
+      "num_predict_per_call": 1600
+    },
+    "error": "Diagnosis was incomplete or empty. Edit generation was skipped.",
+    "elapsed_seconds": 28.97,
+    "output_tokens": 1600
+  },
+  "model_seconds": 28.97
+}

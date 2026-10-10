@@ -1,0 +1,129 @@
+{
+  "source_run": "/Users/manojdannana/Desktop/repo-doctor/eval-results/cloud-qwen3-8b-development/20260919T235127Z-3b0479",
+  "scope": "Saved first proposals only; no retries or model calls",
+  "outcomes": {
+    "repaired": 6
+  },
+  "cases": [
+    {
+      "case": "inclusive_range",
+      "original_status": "validation_rejected",
+      "model_rerun": false,
+      "policy_change": "Accept exact final-line <<<END>> typo",
+      "candidate": {
+        "path": "pipeline.py",
+        "old_code": "return list(range(1, n))",
+        "new_code": "return list(range(1, n + 1))",
+        "explanation": "Model-proposed replacement; correctness requires review and tests."
+      },
+      "candidate_tests": {
+        "passed": true,
+        "returncode": 0,
+        "timeout": false,
+        "output": "ALL_CHECKS_PASSED\n",
+        "seconds": 0.02
+      },
+      "status": "repaired"
+    },
+    {
+      "case": "numeric_strings",
+      "original_status": "validation_rejected",
+      "model_rerun": false,
+      "policy_change": "Accept exact final-line <<<END>> typo",
+      "candidate": {
+        "path": "pipeline.py",
+        "old_code": "    return sum(values)",
+        "new_code": "    return sum(int(value) for value in values)",
+        "explanation": "Model-proposed replacement; correctness requires review and tests."
+      },
+      "candidate_tests": {
+        "passed": true,
+        "returncode": 0,
+        "timeout": false,
+        "output": "ALL_CHECKS_PASSED\n",
+        "seconds": 0.02
+      },
+      "status": "repaired"
+    },
+    {
+      "case": "numeric_sort",
+      "original_status": "validation_rejected",
+      "model_rerun": false,
+      "policy_change": "Accept exact final-line <<<END>> typo",
+      "candidate": {
+        "path": "pipeline.py",
+        "old_code": "    return sorted(scores)",
+        "new_code": "    return sorted(scores, key=lambda x: int(x))",
+        "explanation": "Model-proposed replacement; correctness requires review and tests."
+      },
+      "candidate_tests": {
+        "passed": true,
+        "returncode": 0,
+        "timeout": false,
+        "output": "ALL_CHECKS_PASSED\n",
+        "seconds": 0.02
+      },
+      "status": "repaired"
+    },
+    {
+      "case": "stable_dedup",
+      "original_status": "validation_rejected",
+      "model_rerun": false,
+      "policy_change": "Accept exact final-line <<<END>> typo",
+      "candidate": {
+        "path": "pipeline.py",
+        "old_code": "    return sorted(set(labels))",
+        "new_code": "    return list(dict.fromkeys(labels))",
+        "explanation": "Model-proposed replacement; correctness requires review and tests."
+      },
+      "candidate_tests": {
+        "passed": true,
+        "returncode": 0,
+        "timeout": false,
+        "output": "ALL_CHECKS_PASSED\n",
+        "seconds": 0.021
+      },
+      "status": "repaired"
+    },
+    {
+      "case": "timeout_units",
+      "original_status": "repaired",
+      "model_rerun": false,
+      "policy_change": "Accept exact final-line <<<END>> typo",
+      "candidate": {
+        "path": "pipeline.py",
+        "old_code": "    return TIMEOUT_MS",
+        "new_code": "    return TIMEOUT_MS / 1000",
+        "explanation": "Model-proposed replacement; correctness requires review and tests."
+      },
+      "candidate_tests": {
+        "passed": true,
+        "returncode": 0,
+        "timeout": false,
+        "output": "ALL_CHECKS_PASSED\n",
+        "seconds": 0.02
+      },
+      "status": "repaired"
+    },
+    {
+      "case": "normalize_lookup",
+      "original_status": "validation_rejected",
+      "model_rerun": false,
+      "policy_change": "Accept exact final-line <<<END>> typo",
+      "candidate": {
+        "path": "pipeline.py",
+        "old_code": "    return REGION_CODES.get(region)",
+        "new_code": "    return REGION_CODES.get(region.strip().lower())",
+        "explanation": "Model-proposed replacement; correctness requires review and tests."
+      },
+      "candidate_tests": {
+        "passed": true,
+        "returncode": 0,
+        "timeout": false,
+        "output": "ALL_CHECKS_PASSED\n",
+        "seconds": 0.021
+      },
+      "status": "repaired"
+    }
+  ]
+}

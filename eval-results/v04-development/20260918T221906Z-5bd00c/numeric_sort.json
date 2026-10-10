@@ -1,0 +1,59 @@
+{
+  "case": "numeric_sort",
+  "category": "ordering",
+  "status": "repaired",
+  "issue": "pipeline.py sort_scores(['9', '100', '20']) places 100 before 9; scores should increase numerically.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-s2z1vvbi/checks.py\", line 6, in <module>\n    assert p.sort_scores(['9','100','20']) == ['9','20','100']\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.022
+  },
+  "context": "FILE pipeline.py\n1: def sort_scores(scores):\n2:     return sorted(scores)\n\nFILE README.md\n1: sort_scores sorts integer strings by numeric value, returning the original strings in ascending order. Preserve duplicates.\n",
+  "result": {
+    "model": "qwen3:1.7b",
+    "edit_status": "checks_passed",
+    "output_truncated": false,
+    "raw_response": "DIAGNOSIS RESPONSE\nREQUIREMENTS:  \n- `sort_scores` should sort integer strings by numeric value (e.g., `['9', '100', '20']` \u2192 `['9', '20', '100']`).  \n- Preserve original string order (e.g., duplicates are preserved).  \n- Sorts in ascending numeric order, not lexicographical.  \n\nCAUSE:  \nThe implementation uses `sorted(scores)`, which sorts strings lexicographically (e.g., `'100' > '9'`), violating the requirement to sort by numeric value. The documentation explicitly states the function should sort by numeric value, but the current implementation fails to do so.  \n\nMISSING EVIDENCE:  \nNone needed for this diagnosis. The source code and documentation confirm the implementation uses `sorted()`, which does not sort numerically.\n\nEDIT RESPONSE\nFILE: pipeline.py\n<<<OLD>>>\nreturn sorted(scores)\n<<<NEW>>>\nreturn sorted(scores, key=lambda x: int(x))",
+    "answer": "### Diagnosis (model-generated)\nREQUIREMENTS:  \n- `sort_scores` should sort integer strings by numeric value (e.g., `['9', '100', '20']` \u2192 `['9', '20', '100']`).  \n- Preserve original string order (e.g., duplicates are preserved).  \n- Sorts in ascending numeric order, not lexicographical.  \n\nCAUSE:  \nThe implementation uses `sorted(scores)`, which sorts strings lexicographically (e.g., `'100' > '9'`), violating the requirement to sort by numeric value. The documentation explicitly states the function should sort by numeric value, but the current implementation fails to do so.  \n\nMISSING EVIDENCE:  \nNone needed for this diagnosis. The source code and documentation confirm the implementation uses `sorted()`, which does not sort numerically.\n\n### Proposed diff\n```diff\n--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def sort_scores(scores):\n-    return sorted(scores)\n+    return sorted(scores, key=lambda x: int(x))\n```\n\nSource-match and syntax checks passed. Semantic correctness is unverified. No edits applied or tests run.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "REQUIREMENTS:  \n- `sort_scores` should sort integer strings by numeric value (e.g., `['9', '100', '20']` \u2192 `['9', '20', '100']`).  \n- Preserve original string order (e.g., duplicates are preserved).  \n- Sorts in ascending numeric order, not lexicographical.  \n\nCAUSE:  \nThe implementation uses `sorted(scores)`, which sorts strings lexicographically (e.g., `'100' > '9'`), violating the requirement to sort by numeric value. The documentation explicitly states the function should sort by numeric value, but the current implementation fails to do so.  \n\nMISSING EVIDENCE:  \nNone needed for this diagnosis. The source code and documentation confirm the implementation uses `sorted()`, which does not sort numerically.",
+        "truncated": false,
+        "elapsed_seconds": 10.52,
+        "generated_tokens": 607,
+        "tokens_per_second": 60.6
+      },
+      {
+        "stage": "edit",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\nreturn sorted(scores)\n<<<NEW>>>\nreturn sorted(scores, key=lambda x: int(x))",
+        "truncated": false,
+        "elapsed_seconds": 7.17,
+        "generated_tokens": 390,
+        "tokens_per_second": 61.17
+      }
+    ],
+    "settings": {
+      "version": "0.4.1",
+      "think": true,
+      "format": "omitted",
+      "num_ctx": 4096,
+      "num_predict_per_call": 1600
+    },
+    "elapsed_seconds": 17.7,
+    "output_tokens": 997
+  },
+  "model_seconds": 17.7,
+  "diff": "--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def sort_scores(scores):\n-    return sorted(scores)\n+    return sorted(scores, key=lambda x: int(x))\n",
+  "candidate_tests": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.043
+  }
+}

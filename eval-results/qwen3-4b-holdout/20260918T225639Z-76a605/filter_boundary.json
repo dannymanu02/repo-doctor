@@ -1,0 +1,52 @@
+{
+  "case": "filter_boundary",
+  "category": "filter_contract",
+  "status": "output_truncated",
+  "issue": "pipeline.py nonnegative([0, -2, 3]) drops zero, producing [3] instead of [0, 3].",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-74d9zzfj/checks.py\", line 7, in <module>\n    assert p.nonnegative(values) == [0,3]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.081
+  },
+  "context": "FILE pipeline.py\n1: def nonnegative(values):\n2:     return [value for value in values if value > 0]\n\nFILE README.md\n1: nonnegative returns a new list containing every value greater than or equal to zero. Preserve original order and duplicates; do not modify the input list. Values are integers.\n",
+  "result": {
+    "model": "qwen3:4b",
+    "edit_status": "rejected",
+    "output_truncated": true,
+    "raw_response": "DIAGNOSIS RESPONSE\nREQUIREMENTS: nonnegative must include 0 (>=0) per README.md line 1. Cited: README.md:1.\n\nCAUSE: Implementation uses `value > 0` (pipeline.py:2) which excludes 0, violating the requirement to include 0.\n\nMISSING EVIDENCE: None needed for this diagnosis.\n\nEDIT RESPONSE\n",
+    "answer": "### Diagnosis (model-generated)\nREQUIREMENTS: nonnegative must include 0 (>=0) per README.md line 1. Cited: README.md:1.\n\nCAUSE: Implementation uses `value > 0` (pipeline.py:2) which excludes 0, violating the requirement to include 0.\n\nMISSING EVIDENCE: None needed for this diagnosis.\n\n### No patch generated\nEdit response was incomplete or empty. No patch generated.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "REQUIREMENTS: nonnegative must include 0 (>=0) per README.md line 1. Cited: README.md:1.\n\nCAUSE: Implementation uses `value > 0` (pipeline.py:2) which excludes 0, violating the requirement to include 0.\n\nMISSING EVIDENCE: None needed for this diagnosis.",
+        "truncated": false,
+        "elapsed_seconds": 61.81,
+        "generated_tokens": 777,
+        "tokens_per_second": 12.81
+      },
+      {
+        "stage": "edit",
+        "content": "",
+        "truncated": true,
+        "elapsed_seconds": 101.45,
+        "generated_tokens": 1600,
+        "tokens_per_second": 16.23
+      }
+    ],
+    "settings": {
+      "version": "0.4.1",
+      "think": true,
+      "format": "omitted",
+      "num_ctx": 4096,
+      "num_predict_per_call": 1600
+    },
+    "error": "Edit response was incomplete or empty. No patch generated.",
+    "elapsed_seconds": 163.27,
+    "output_tokens": 2377
+  },
+  "model_seconds": 163.27
+}

@@ -1,0 +1,115 @@
+{
+  "case": "timeout_units",
+  "category": "cross_file",
+  "status": "repaired",
+  "issue": "pipeline.py timeout_seconds returns 2500, but the client expects 2.5 seconds. Check the configured timeout units.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-k64e1cuo/checks.py\", line 8, in <module>\n    assert p.timeout_seconds() == expected\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.043
+  },
+  "context": "FILE pipeline.py\n1: from config import TIMEOUT_MS\n2: \n3: def timeout_seconds():\n4:     return TIMEOUT_MS\n\nFILE README.md\n1: The configuration stores TIMEOUT_MS in milliseconds. timeout_seconds must return seconds, including fractional seconds.\n\nFILE config.py\n1: TIMEOUT_MS = 2500\n",
+  "selection": [
+    {
+      "path": "pipeline.py",
+      "reason": "error match",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "path": "README.md",
+      "reason": "documentation",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 1
+    },
+    {
+      "path": "config.py",
+      "reason": "imported by pipeline.py",
+      "depth": 1,
+      "start_line": 1,
+      "end_line": 1
+    }
+  ],
+  "retrieval_notes": [],
+  "result": {
+    "model": "qwen3:8b",
+    "edit_status": "checks_passed",
+    "output_truncated": false,
+    "raw_response": "DIAGNOSIS RESPONSE\nREQUIREMENTS: `timeout_seconds()` must return seconds, including fractional seconds (README.md:1). `TIMEOUT_MS` is in milliseconds (config.py:1).  \nCAUSE: `timeout_seconds()` returns `TIMEOUT_MS` (pipeline.py:4), which is 2500 milliseconds, but the client expects seconds (2.5 seconds). The function fails to convert milliseconds to seconds.  \nMISSING EVIDENCE: None needed for this diagnosis.\n\nEDIT ATTEMPT 1\nFILE: pipeline.py\n<<<OLD>>>\n    return TIMEOUT_MS\n<<<NEW>>>\n    return TIMEOUT_MS / 1000\n<<<END>>>",
+    "answer": "### Diagnosis (model-generated)\nREQUIREMENTS: `timeout_seconds()` must return seconds, including fractional seconds (README.md:1). `TIMEOUT_MS` is in milliseconds (config.py:1).  \nCAUSE: `timeout_seconds()` returns `TIMEOUT_MS` (pipeline.py:4), which is 2500 milliseconds, but the client expects seconds (2.5 seconds). The function fails to convert milliseconds to seconds.  \nMISSING EVIDENCE: None needed for this diagnosis.\n\n### Proposed diff\n```diff\n--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,4 +1,4 @@\n from config import TIMEOUT_MS\n \n def timeout_seconds():\n-    return TIMEOUT_MS\n+    return TIMEOUT_MS / 1000\n```\n\nSource-match and compilation checks passed. Semantic correctness is unverified. No edits applied or tests run.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "REQUIREMENTS: `timeout_seconds()` must return seconds, including fractional seconds (README.md:1). `TIMEOUT_MS` is in milliseconds (config.py:1).  \nCAUSE: `timeout_seconds()` returns `TIMEOUT_MS` (pipeline.py:4), which is 2500 milliseconds, but the client expects seconds (2.5 seconds). The function fails to convert milliseconds to seconds.  \nMISSING EVIDENCE: None needed for this diagnosis.",
+        "truncated": false,
+        "elapsed_seconds": 2.8,
+        "generated_tokens": 98,
+        "tokens_per_second": 39.19
+      },
+      {
+        "stage": "edit",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\n    return TIMEOUT_MS\n<<<NEW>>>\n    return TIMEOUT_MS / 1000\n<<<END>>>",
+        "truncated": false,
+        "elapsed_seconds": 1.24,
+        "generated_tokens": 34,
+        "tokens_per_second": 39.43
+      }
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "checks_passed",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\n    return TIMEOUT_MS\n<<<NEW>>>\n    return TIMEOUT_MS / 1000\n<<<END>>>",
+        "elapsed_seconds": 1.24
+      }
+    ],
+    "retry_count": 0,
+    "failure_kind": null,
+    "accepted_edit": {
+      "path": "pipeline.py",
+      "old_code": "    return TIMEOUT_MS",
+      "new_code": "    return TIMEOUT_MS / 1000",
+      "explanation": "Model-proposed replacement; correctness requires review and tests."
+    },
+    "settings": {
+      "version": "0.6",
+      "think_by_stage": {
+        "diagnose": false,
+        "edit": false
+      },
+      "format": "omitted",
+      "num_ctx": 4096,
+      "diagnosis_token_limit": 2400,
+      "edit_token_limit": 1600,
+      "max_corrective_retries": 1
+    },
+    "elapsed_seconds": 4.04,
+    "output_tokens": 132
+  },
+  "model_seconds": 4.04,
+  "retry_count": 0,
+  "first_edit_status": "checks_passed",
+  "diff": "--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,4 +1,4 @@\n from config import TIMEOUT_MS\n \n def timeout_seconds():\n-    return TIMEOUT_MS\n+    return TIMEOUT_MS / 1000\n",
+  "public_check": "assert p.timeout_seconds() == 2.5",
+  "public_before_retry": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.048
+  },
+  "behavioral_retry_count": 0,
+  "candidate_tests": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.02
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "case": "normalize_lookup",
+  "category": "cross_file",
+  "status": "tests_failed",
+  "issue": "pipeline.py lookup_code(' eu ') returns None; callers expect the supported region code 2.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-wgtff09m/checks.py\", line 6, in <module>\n    assert p.lookup_code(' eu ') == 2\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.042
+  },
+  "context": "FILE pipeline.py\n1: from config import REGION_CODES\n2: \n3: def lookup_code(region):\n4:     return REGION_CODES.get(region)\n\nFILE README.md\n1: lookup_code accepts region strings with surrounding whitespace and mixed case. Unknown regions return None. Configuration keys are lowercase.\n\nFILE config.py\n1: REGION_CODES = {'us': 1, 'eu': 2}\n",
+  "result": {
+    "model": "qwen3:1.7b",
+    "edit_status": "checks_passed",
+    "output_truncated": false,
+    "raw_response": "DIAGNOSIS RESPONSE\nThe failure occurs because `lookup_code(' eu ')` returns `None` despite the expected value `2`. The code checks for exact string matches in `REGION_CODES` (e.g., `'eu'` vs. `' eu '`). The issue lies in **not trimming or normalizing the input region string**. The documentation claims it handles whitespace and case, but the implementation fails to address this, leading to mismatches. Evidence missing: how the input is processed (e.g., trimming, case conversion).\n\nEDIT RESPONSE\nFILE: pipeline.py\n<<<OLD>>>\nreturn REGION_CODES.get(region)\n<<<NEW>>>\nreturn REGION_CODES.get(region.strip())",
+    "answer": "### Diagnosis (model-generated)\nThe failure occurs because `lookup_code(' eu ')` returns `None` despite the expected value `2`. The code checks for exact string matches in `REGION_CODES` (e.g., `'eu'` vs. `' eu '`). The issue lies in **not trimming or normalizing the input region string**. The documentation claims it handles whitespace and case, but the implementation fails to address this, leading to mismatches. Evidence missing: how the input is processed (e.g., trimming, case conversion).\n\n### Proposed diff\n```diff\n--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,4 +1,4 @@\n from config import REGION_CODES\n \n def lookup_code(region):\n-    return REGION_CODES.get(region)\n+    return REGION_CODES.get(region.strip())\n```\n\nSource-match and syntax checks passed. Semantic correctness is unverified. No edits applied or tests run.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "The failure occurs because `lookup_code(' eu ')` returns `None` despite the expected value `2`. The code checks for exact string matches in `REGION_CODES` (e.g., `'eu'` vs. `' eu '`). The issue lies in **not trimming or normalizing the input region string**. The documentation claims it handles whitespace and case, but the implementation fails to address this, leading to mismatches. Evidence missing: how the input is processed (e.g., trimming, case conversion).",
+        "truncated": false,
+        "elapsed_seconds": 7.18,
+        "generated_tokens": 366,
+        "tokens_per_second": 54.5
+      },
+      {
+        "stage": "edit",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\nreturn REGION_CODES.get(region)\n<<<NEW>>>\nreturn REGION_CODES.get(region.strip())",
+        "truncated": false,
+        "elapsed_seconds": 8.28,
+        "generated_tokens": 395,
+        "tokens_per_second": 52.28
+      }
+    ],
+    "settings": {
+      "version": "0.3",
+      "think": true,
+      "format": "omitted",
+      "num_ctx": 4096,
+      "num_predict_per_call": 1600
+    },
+    "elapsed_seconds": 15.47,
+    "output_tokens": 761
+  },
+  "model_seconds": 15.47,
+  "diff": "--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,4 +1,4 @@\n from config import REGION_CODES\n \n def lookup_code(region):\n-    return REGION_CODES.get(region)\n+    return REGION_CODES.get(region.strip())\n",
+  "candidate_tests": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-p47tz70s/checks.py\", line 7, in <module>\n    assert p.lookup_code('US') == 1\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.081
+  }
+}

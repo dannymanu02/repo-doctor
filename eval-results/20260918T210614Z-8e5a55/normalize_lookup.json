@@ -1,0 +1,15 @@
+{
+  "case": "normalize_lookup",
+  "category": "cross_file",
+  "status": "fixture_verified",
+  "issue": "pipeline.py lookup_code(' eu ') returns None; callers expect the supported region code 2.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-9ol3cwje/checks.py\", line 6, in <module>\n    assert p.lookup_code(' eu ') == 2\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.02
+  }
+}

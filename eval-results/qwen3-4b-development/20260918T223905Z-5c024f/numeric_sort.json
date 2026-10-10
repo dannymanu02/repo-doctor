@@ -1,0 +1,52 @@
+{
+  "case": "numeric_sort",
+  "category": "ordering",
+  "status": "output_truncated",
+  "issue": "pipeline.py sort_scores(['9', '100', '20']) places 100 before 9; scores should increase numerically.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-4df2gioo/checks.py\", line 6, in <module>\n    assert p.sort_scores(['9','100','20']) == ['9','20','100']\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.047
+  },
+  "context": "FILE pipeline.py\n1: def sort_scores(scores):\n2:     return sorted(scores)\n\nFILE README.md\n1: sort_scores sorts integer strings by numeric value, returning the original strings in ascending order. Preserve duplicates.\n",
+  "result": {
+    "model": "qwen3:4b",
+    "edit_status": "rejected",
+    "output_truncated": true,
+    "raw_response": "DIAGNOSIS RESPONSE\nREQUIREMENTS:  \nSort integer strings by numeric value (ascending), preserve duplicates. Cited in README.md line 1.  \n\nCAUSE:  \nImplementation uses `sorted(scores)` (pipeline.py line 2), which sorts strings lexicographically (e.g., '100' < '20' < '9') instead of numerically.  \n\nMISSING EVIDENCE:  \nNone needed for this diagnosis.\n\nEDIT RESPONSE\n",
+    "answer": "### Diagnosis (model-generated)\nREQUIREMENTS:  \nSort integer strings by numeric value (ascending), preserve duplicates. Cited in README.md line 1.  \n\nCAUSE:  \nImplementation uses `sorted(scores)` (pipeline.py line 2), which sorts strings lexicographically (e.g., '100' < '20' < '9') instead of numerically.  \n\nMISSING EVIDENCE:  \nNone needed for this diagnosis.\n\n### No patch generated\nEdit response was incomplete or empty. No patch generated.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "REQUIREMENTS:  \nSort integer strings by numeric value (ascending), preserve duplicates. Cited in README.md line 1.  \n\nCAUSE:  \nImplementation uses `sorted(scores)` (pipeline.py line 2), which sorts strings lexicographically (e.g., '100' < '20' < '9') instead of numerically.  \n\nMISSING EVIDENCE:  \nNone needed for this diagnosis.",
+        "truncated": false,
+        "elapsed_seconds": 88.98,
+        "generated_tokens": 1165,
+        "tokens_per_second": 13.44
+      },
+      {
+        "stage": "edit",
+        "content": "",
+        "truncated": true,
+        "elapsed_seconds": 95.98,
+        "generated_tokens": 1600,
+        "tokens_per_second": 17.14
+      }
+    ],
+    "settings": {
+      "version": "0.4.1",
+      "think": true,
+      "format": "omitted",
+      "num_ctx": 4096,
+      "num_predict_per_call": 1600
+    },
+    "error": "Edit response was incomplete or empty. No patch generated.",
+    "elapsed_seconds": 184.97,
+    "output_tokens": 2765
+  },
+  "model_seconds": 184.97
+}

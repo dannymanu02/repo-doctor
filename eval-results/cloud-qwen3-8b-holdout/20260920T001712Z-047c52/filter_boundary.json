@@ -1,0 +1,108 @@
+{
+  "case": "filter_boundary",
+  "category": "filter_contract",
+  "status": "repaired",
+  "issue": "pipeline.py nonnegative([0, -2, 3]) drops zero, producing [3] instead of [0, 3].",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-oi7k29od/checks.py\", line 7, in <module>\n    assert p.nonnegative(values) == [0,3]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.041
+  },
+  "context": "FILE pipeline.py\n1: def nonnegative(values):\n2:     return [value for value in values if value > 0]\n\nFILE README.md\n1: nonnegative returns a new list containing every value greater than or equal to zero. Preserve original order and duplicates; do not modify the input list. Values are integers.\n",
+  "selection": [
+    {
+      "path": "pipeline.py",
+      "reason": "error match",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 2
+    },
+    {
+      "path": "README.md",
+      "reason": "documentation",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 1
+    }
+  ],
+  "retrieval_notes": [],
+  "result": {
+    "model": "qwen3:8b",
+    "edit_status": "checks_passed",
+    "output_truncated": false,
+    "raw_response": "DIAGNOSIS RESPONSE\nREQUIREMENTS: nonnegative must return values \u2265 0 (line 1 of README.md). It must preserve original order and duplicates (line 1). The input list must not be modified (line 1).\n\nCAUSE: The implementation filters values > 0 (line 2), excluding zero, violating the requirement to include values \u2265 0.\n\nMISSING EVIDENCE: None needed for this diagnosis.\n\nEDIT ATTEMPT 1\nFILE: pipeline.py\n<<<OLD>>>\n    return [value for value in values if value > 0]\n<<<NEW>>>\n    return [value for value in values if value >= 0]\n<<<END>>",
+    "answer": "### Diagnosis (model-generated)\nREQUIREMENTS: nonnegative must return values \u2265 0 (line 1 of README.md). It must preserve original order and duplicates (line 1). The input list must not be modified (line 1).\n\nCAUSE: The implementation filters values > 0 (line 2), excluding zero, violating the requirement to include values \u2265 0.\n\nMISSING EVIDENCE: None needed for this diagnosis.\n\n### Proposed diff\n```diff\n--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def nonnegative(values):\n-    return [value for value in values if value > 0]\n+    return [value for value in values if value >= 0]\n```\n\nSource-match and compilation checks passed. Semantic correctness is unverified. No edits applied or tests run.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "REQUIREMENTS: nonnegative must return values \u2265 0 (line 1 of README.md). It must preserve original order and duplicates (line 1). The input list must not be modified (line 1).\n\nCAUSE: The implementation filters values > 0 (line 2), excluding zero, violating the requirement to include values \u2265 0.\n\nMISSING EVIDENCE: None needed for this diagnosis.",
+        "truncated": false,
+        "elapsed_seconds": 2.42,
+        "generated_tokens": 85,
+        "tokens_per_second": 39.37
+      },
+      {
+        "stage": "edit",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\n    return [value for value in values if value > 0]\n<<<NEW>>>\n    return [value for value in values if value >= 0]\n<<<END>>",
+        "truncated": false,
+        "elapsed_seconds": 1.51,
+        "generated_tokens": 45,
+        "tokens_per_second": 39.69
+      }
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "checks_passed",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\n    return [value for value in values if value > 0]\n<<<NEW>>>\n    return [value for value in values if value >= 0]\n<<<END>>",
+        "elapsed_seconds": 1.51
+      }
+    ],
+    "retry_count": 0,
+    "failure_kind": null,
+    "accepted_edit": {
+      "path": "pipeline.py",
+      "old_code": "    return [value for value in values if value > 0]",
+      "new_code": "    return [value for value in values if value >= 0]",
+      "explanation": "Model-proposed replacement; correctness requires review and tests."
+    },
+    "settings": {
+      "version": "0.6",
+      "think_by_stage": {
+        "diagnose": false,
+        "edit": false
+      },
+      "format": "omitted",
+      "num_ctx": 4096,
+      "diagnosis_token_limit": 2400,
+      "edit_token_limit": 1600,
+      "max_corrective_retries": 1
+    },
+    "elapsed_seconds": 3.94,
+    "output_tokens": 130
+  },
+  "model_seconds": 3.94,
+  "retry_count": 0,
+  "first_edit_status": "checks_passed",
+  "diff": "--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def nonnegative(values):\n-    return [value for value in values if value > 0]\n+    return [value for value in values if value >= 0]\n",
+  "public_check": "assert p.nonnegative([0,-2,3]) == [0,3]",
+  "public_before_retry": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.042
+  },
+  "behavioral_retry_count": 0,
+  "candidate_tests": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.037
+  }
+}

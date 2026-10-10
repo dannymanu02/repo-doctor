@@ -1,0 +1,122 @@
+{
+  "case": "import_conversion",
+  "category": "cross_file",
+  "status": "repaired",
+  "issue": "pipeline.py report_duration(2500) returns 2500000 instead of 2.5 seconds.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-8qydm_p8/checks.py\", line 6, in <module>\n    assert p.report_duration(2500) == 2.5\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.02
+  },
+  "context": "FILE pipeline.py\n1: from conversions import to_seconds\n2: \n3: def report_duration(milliseconds):\n4:     return to_seconds(milliseconds)\n\nFILE README.md\n1: report_duration accepts non-negative milliseconds and returns seconds, including fractional parts. 2500 milliseconds is 2.5 seconds.\n\nFILE conversions.py\n1: from units import SCALE\n2: \n3: def to_seconds(value):\n4:     return value * SCALE\n\nFILE units.py\n1: SCALE = 1000\n",
+  "selection": [
+    {
+      "path": "pipeline.py",
+      "reason": "error match",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "path": "README.md",
+      "reason": "documentation",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 1
+    },
+    {
+      "path": "conversions.py",
+      "reason": "imported by pipeline.py",
+      "depth": 1,
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "path": "units.py",
+      "reason": "imported by conversions.py",
+      "depth": 2,
+      "start_line": 1,
+      "end_line": 1
+    }
+  ],
+  "retrieval_notes": [],
+  "result": {
+    "model": "qwen3:8b",
+    "edit_status": "checks_passed",
+    "output_truncated": false,
+    "raw_response": "DIAGNOSIS RESPONSE\nREQUIREMENTS: `report_duration` must return seconds as a float, including fractional parts. For 2500 ms, it should return 2.5. This is documented in README.md line 1. `to_seconds` must convert milliseconds to seconds by dividing by 1000, but `SCALE` in units.py is set to 1000, implying multiplication.\n\nCAUSE: `to_seconds` incorrectly multiplies by `SCALE` (1000), converting milliseconds to seconds as 2500 * 1000 = 2,500,000 instead of dividing by 1000.\n\nMISSING EVIDENCE: None needed for this diagnosis.\n\nEDIT ATTEMPT 1\nFILE: conversions.py\n<<<OLD>>>\n    return value * SCALE\n<<<NEW>>>\n    return value / SCALE\n<<<END>>",
+    "answer": "### Diagnosis (model-generated)\nREQUIREMENTS: `report_duration` must return seconds as a float, including fractional parts. For 2500 ms, it should return 2.5. This is documented in README.md line 1. `to_seconds` must convert milliseconds to seconds by dividing by 1000, but `SCALE` in units.py is set to 1000, implying multiplication.\n\nCAUSE: `to_seconds` incorrectly multiplies by `SCALE` (1000), converting milliseconds to seconds as 2500 * 1000 = 2,500,000 instead of dividing by 1000.\n\nMISSING EVIDENCE: None needed for this diagnosis.\n\n### Proposed diff\n```diff\n--- a/conversions.py\n+++ b/conversions.py\n@@ -1,4 +1,4 @@\n from units import SCALE\n \n def to_seconds(value):\n-    return value * SCALE\n+    return value / SCALE\n```\n\nSource-match and compilation checks passed. Semantic correctness is unverified. No edits applied or tests run.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "REQUIREMENTS: `report_duration` must return seconds as a float, including fractional parts. For 2500 ms, it should return 2.5. This is documented in README.md line 1. `to_seconds` must convert milliseconds to seconds by dividing by 1000, but `SCALE` in units.py is set to 1000, implying multiplication.\n\nCAUSE: `to_seconds` incorrectly multiplies by `SCALE` (1000), converting milliseconds to seconds as 2500 * 1000 = 2,500,000 instead of dividing by 1000.\n\nMISSING EVIDENCE: None needed for this diagnosis.",
+        "truncated": false,
+        "elapsed_seconds": 4.2,
+        "generated_tokens": 152,
+        "tokens_per_second": 38.44
+      },
+      {
+        "stage": "edit",
+        "content": "FILE: conversions.py\n<<<OLD>>>\n    return value * SCALE\n<<<NEW>>>\n    return value / SCALE\n<<<END>>",
+        "truncated": false,
+        "elapsed_seconds": 1.07,
+        "generated_tokens": 29,
+        "tokens_per_second": 39.4
+      }
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "checks_passed",
+        "content": "FILE: conversions.py\n<<<OLD>>>\n    return value * SCALE\n<<<NEW>>>\n    return value / SCALE\n<<<END>>",
+        "elapsed_seconds": 1.07
+      }
+    ],
+    "retry_count": 0,
+    "failure_kind": null,
+    "accepted_edit": {
+      "path": "conversions.py",
+      "old_code": "    return value * SCALE",
+      "new_code": "    return value / SCALE",
+      "explanation": "Model-proposed replacement; correctness requires review and tests."
+    },
+    "settings": {
+      "version": "0.6",
+      "think_by_stage": {
+        "diagnose": false,
+        "edit": false
+      },
+      "format": "omitted",
+      "num_ctx": 4096,
+      "diagnosis_token_limit": 2400,
+      "edit_token_limit": 1600,
+      "max_corrective_retries": 1
+    },
+    "elapsed_seconds": 5.27,
+    "output_tokens": 181
+  },
+  "model_seconds": 5.27,
+  "retry_count": 0,
+  "first_edit_status": "checks_passed",
+  "diff": "--- a/conversions.py\n+++ b/conversions.py\n@@ -1,4 +1,4 @@\n from units import SCALE\n \n def to_seconds(value):\n-    return value * SCALE\n+    return value / SCALE\n",
+  "public_check": "assert p.report_duration(2500) == 2.5",
+  "public_before_retry": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.043
+  },
+  "behavioral_retry_count": 0,
+  "candidate_tests": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.022
+  }
+}

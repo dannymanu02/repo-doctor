@@ -1,0 +1,15 @@
+{
+  "case": "stable_dedup",
+  "category": "collection_logic",
+  "status": "fixture_verified",
+  "issue": "pipeline.py unique_labels(['b', 'a', 'b']) returns ['a', 'b']; the expected order is ['b', 'a'].",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-jejg7syu/checks.py\", line 6, in <module>\n    assert p.unique_labels(['b','a','b']) == ['b','a']\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.021
+  }
+}

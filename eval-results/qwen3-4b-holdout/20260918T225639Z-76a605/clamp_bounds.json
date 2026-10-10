@@ -1,0 +1,44 @@
+{
+  "case": "clamp_bounds",
+  "category": "boundary_contract",
+  "status": "output_truncated",
+  "issue": "pipeline.py clamp_score(130) returns 130, but scores above the allowed range should return 100.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-71t0a6z6/checks.py\", line 6, in <module>\n    assert p.clamp_score(130) == 100\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.04
+  },
+  "context": "FILE pipeline.py\n1: def clamp_score(score):\n2:     return max(0, score)\n\nFILE README.md\n1: clamp_score limits numeric scores to the inclusive range 0 through 100. Values inside the range are unchanged. Negative values become zero.\n",
+  "result": {
+    "model": "qwen3:4b",
+    "edit_status": "rejected",
+    "output_truncated": true,
+    "raw_response": "DIAGNOSIS RESPONSE\nREQUIREMENTS: clamp_score must limit scores to inclusive range [0,100] (README.md line 1). Specifically: scores >",
+    "answer": "### Diagnosis (model-generated)\nREQUIREMENTS: clamp_score must limit scores to inclusive range [0,100] (README.md line 1). Specifically: scores >\n\n### No patch generated\nDiagnosis was incomplete or empty. Edit generation was skipped.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "REQUIREMENTS: clamp_score must limit scores to inclusive range [0,100] (README.md line 1). Specifically: scores >",
+        "truncated": true,
+        "elapsed_seconds": 76.24,
+        "generated_tokens": 1600,
+        "tokens_per_second": 21.22
+      }
+    ],
+    "settings": {
+      "version": "0.4.1",
+      "think": true,
+      "format": "omitted",
+      "num_ctx": 4096,
+      "num_predict_per_call": 1600
+    },
+    "error": "Diagnosis was incomplete or empty. Edit generation was skipped.",
+    "elapsed_seconds": 76.24,
+    "output_tokens": 1600
+  },
+  "model_seconds": 76.24
+}

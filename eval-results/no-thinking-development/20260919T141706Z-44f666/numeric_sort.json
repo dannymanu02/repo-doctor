@@ -1,0 +1,108 @@
+{
+  "case": "numeric_sort",
+  "category": "ordering",
+  "status": "repaired",
+  "issue": "pipeline.py sort_scores(['9', '100', '20']) places 100 before 9; scores should increase numerically.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-4ziya77a/checks.py\", line 6, in <module>\n    assert p.sort_scores(['9','100','20']) == ['9','20','100']\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.08
+  },
+  "context": "FILE pipeline.py\n1: def sort_scores(scores):\n2:     return sorted(scores)\n\nFILE README.md\n1: sort_scores sorts integer strings by numeric value, returning the original strings in ascending order. Preserve duplicates.\n",
+  "selection": [
+    {
+      "path": "pipeline.py",
+      "reason": "error match",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 2
+    },
+    {
+      "path": "README.md",
+      "reason": "documentation",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 1
+    }
+  ],
+  "retrieval_notes": [],
+  "result": {
+    "model": "qwen3:1.7b",
+    "edit_status": "checks_passed",
+    "output_truncated": false,
+    "raw_response": "DIAGNOSIS RESPONSE\nREQUIREMENTS:  \nThe function must sort the list of string scores in ascending numeric order. The function must preserve the original string order for duplicates. The function must handle edge cases such as non-integer strings and empty inputs.\n\nCAUSE:  \nThe implementation does not sort the scores numerically; it returns the list in its original order. The sorted() function in Python sorts strings lexicographically, not numerically, which violates the requirement to sort by numeric value.\n\nMISSING EVIDENCE:  \nNone needed for this diagnosis. The implementation uses sorted(), which does not sort strings numerically. The documentation does not mention any specific sorting method, but the requirement explicitly states that the function must sort by numeric value.\n\nEDIT ATTEMPT 1\nFILE: pipeline.py\n<<<OLD>>>\nreturn sorted(scores)\n<<<NEW>>>\nreturn sorted(scores, key=int)",
+    "answer": "### Diagnosis (model-generated)\nREQUIREMENTS:  \nThe function must sort the list of string scores in ascending numeric order. The function must preserve the original string order for duplicates. The function must handle edge cases such as non-integer strings and empty inputs.\n\nCAUSE:  \nThe implementation does not sort the scores numerically; it returns the list in its original order. The sorted() function in Python sorts strings lexicographically, not numerically, which violates the requirement to sort by numeric value.\n\nMISSING EVIDENCE:  \nNone needed for this diagnosis. The implementation uses sorted(), which does not sort strings numerically. The documentation does not mention any specific sorting method, but the requirement explicitly states that the function must sort by numeric value.\n\n### Proposed diff\n```diff\n--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def sort_scores(scores):\n-    return sorted(scores)\n+    return sorted(scores, key=int)\n```\n\nSource-match and compilation checks passed. Semantic correctness is unverified. No edits applied or tests run.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "REQUIREMENTS:  \nThe function must sort the list of string scores in ascending numeric order. The function must preserve the original string order for duplicates. The function must handle edge cases such as non-integer strings and empty inputs.\n\nCAUSE:  \nThe implementation does not sort the scores numerically; it returns the list in its original order. The sorted() function in Python sorts strings lexicographically, not numerically, which violates the requirement to sort by numeric value.\n\nMISSING EVIDENCE:  \nNone needed for this diagnosis. The implementation uses sorted(), which does not sort strings numerically. The documentation does not mention any specific sorting method, but the requirement explicitly states that the function must sort by numeric value.",
+        "truncated": false,
+        "elapsed_seconds": 3.01,
+        "generated_tokens": 146,
+        "tokens_per_second": 52.58
+      },
+      {
+        "stage": "edit",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\nreturn sorted(scores)\n<<<NEW>>>\nreturn sorted(scores, key=int)",
+        "truncated": false,
+        "elapsed_seconds": 0.92,
+        "generated_tokens": 25,
+        "tokens_per_second": 61.48
+      }
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "checks_passed",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\nreturn sorted(scores)\n<<<NEW>>>\nreturn sorted(scores, key=int)",
+        "elapsed_seconds": 0.92
+      }
+    ],
+    "retry_count": 0,
+    "failure_kind": null,
+    "accepted_edit": {
+      "path": "pipeline.py",
+      "old_code": "return sorted(scores)",
+      "new_code": "return sorted(scores, key=int)",
+      "explanation": "Model-proposed replacement; correctness requires review and tests."
+    },
+    "settings": {
+      "version": "0.6",
+      "think_by_stage": {
+        "diagnose": false,
+        "edit": false
+      },
+      "format": "omitted",
+      "num_ctx": 4096,
+      "diagnosis_token_limit": 2400,
+      "edit_token_limit": 1600,
+      "max_corrective_retries": 1
+    },
+    "elapsed_seconds": 3.95,
+    "output_tokens": 171
+  },
+  "model_seconds": 3.95,
+  "retry_count": 0,
+  "first_edit_status": "checks_passed",
+  "diff": "--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def sort_scores(scores):\n-    return sorted(scores)\n+    return sorted(scores, key=int)\n",
+  "public_check": "assert p.sort_scores(['9','100','20']) == ['9','20','100']",
+  "public_before_retry": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.087
+  },
+  "behavioral_retry_count": 0,
+  "candidate_tests": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.042
+  }
+}

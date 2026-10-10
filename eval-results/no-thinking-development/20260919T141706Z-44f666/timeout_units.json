@@ -1,0 +1,115 @@
+{
+  "case": "timeout_units",
+  "category": "cross_file",
+  "status": "repaired",
+  "issue": "pipeline.py timeout_seconds returns 2500, but the client expects 2.5 seconds. Check the configured timeout units.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-bbr039eg/checks.py\", line 8, in <module>\n    assert p.timeout_seconds() == expected\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.042
+  },
+  "context": "FILE pipeline.py\n1: from config import TIMEOUT_MS\n2: \n3: def timeout_seconds():\n4:     return TIMEOUT_MS\n\nFILE README.md\n1: The configuration stores TIMEOUT_MS in milliseconds. timeout_seconds must return seconds, including fractional seconds.\n\nFILE config.py\n1: TIMEOUT_MS = 2500\n",
+  "selection": [
+    {
+      "path": "pipeline.py",
+      "reason": "error match",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 4
+    },
+    {
+      "path": "README.md",
+      "reason": "documentation",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 1
+    },
+    {
+      "path": "config.py",
+      "reason": "imported by pipeline.py",
+      "depth": 1,
+      "start_line": 1,
+      "end_line": 1
+    }
+  ],
+  "retrieval_notes": [],
+  "result": {
+    "model": "qwen3:1.7b",
+    "edit_status": "checks_passed",
+    "output_truncated": false,
+    "raw_response": "DIAGNOSIS RESPONSE\nREQUIREMENTS:  \n- `timeout_seconds()` must return a value in seconds, including fractional seconds.  \n- The function must handle fractional seconds as specified in the configuration.  \n- The function must return the configured value in milliseconds (TIMEOUT_MS) converted to seconds.  \n- The function must preserve the behavior of returning the configured value as specified in the documentation.\n\nCAUSE:  \nThe implementation violates the requirement that `timeout_seconds()` must return seconds, including fractional seconds. The function returns `TIMEOUT_MS` directly, which is in milliseconds, not seconds. The documentation explicitly states that `timeout_seconds` must return seconds, including fractional seconds, but the implementation does not adhere to this rule.\n\nMISSING EVIDENCE:  \nNone needed for this diagnosis. The supplied material explicitly states that `timeout_seconds` must return seconds, including fractional seconds, and the configuration stores `TIMEOUT_MS` in milliseconds. The implementation does not convert `TIMEOUT_MS` to seconds, violating the documented behavior.\n\nEDIT ATTEMPT 1\nFILE: pipeline.py\n<<<OLD>>>\nreturn TIMEOUT_MS\n<<<NEW>>>\nreturn TIMEOUT_MS / 1000\n<<<END>>>",
+    "answer": "### Diagnosis (model-generated)\nREQUIREMENTS:  \n- `timeout_seconds()` must return a value in seconds, including fractional seconds.  \n- The function must handle fractional seconds as specified in the configuration.  \n- The function must return the configured value in milliseconds (TIMEOUT_MS) converted to seconds.  \n- The function must preserve the behavior of returning the configured value as specified in the documentation.\n\nCAUSE:  \nThe implementation violates the requirement that `timeout_seconds()` must return seconds, including fractional seconds. The function returns `TIMEOUT_MS` directly, which is in milliseconds, not seconds. The documentation explicitly states that `timeout_seconds` must return seconds, including fractional seconds, but the implementation does not adhere to this rule.\n\nMISSING EVIDENCE:  \nNone needed for this diagnosis. The supplied material explicitly states that `timeout_seconds` must return seconds, including fractional seconds, and the configuration stores `TIMEOUT_MS` in milliseconds. The implementation does not convert `TIMEOUT_MS` to seconds, violating the documented behavior.\n\n### Proposed diff\n```diff\n--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,4 +1,4 @@\n from config import TIMEOUT_MS\n \n def timeout_seconds():\n-    return TIMEOUT_MS\n+    return TIMEOUT_MS / 1000\n```\n\nSource-match and compilation checks passed. Semantic correctness is unverified. No edits applied or tests run.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "REQUIREMENTS:  \n- `timeout_seconds()` must return a value in seconds, including fractional seconds.  \n- The function must handle fractional seconds as specified in the configuration.  \n- The function must return the configured value in milliseconds (TIMEOUT_MS) converted to seconds.  \n- The function must preserve the behavior of returning the configured value as specified in the documentation.\n\nCAUSE:  \nThe implementation violates the requirement that `timeout_seconds()` must return seconds, including fractional seconds. The function returns `TIMEOUT_MS` directly, which is in milliseconds, not seconds. The documentation explicitly states that `timeout_seconds` must return seconds, including fractional seconds, but the implementation does not adhere to this rule.\n\nMISSING EVIDENCE:  \nNone needed for this diagnosis. The supplied material explicitly states that `timeout_seconds` must return seconds, including fractional seconds, and the configuration stores `TIMEOUT_MS` in milliseconds. The implementation does not convert `TIMEOUT_MS` to seconds, violating the documented behavior.",
+        "truncated": false,
+        "elapsed_seconds": 3.78,
+        "generated_tokens": 203,
+        "tokens_per_second": 57.58
+      },
+      {
+        "stage": "edit",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\nreturn TIMEOUT_MS\n<<<NEW>>>\nreturn TIMEOUT_MS / 1000\n<<<END>>>",
+        "truncated": false,
+        "elapsed_seconds": 1.19,
+        "generated_tokens": 32,
+        "tokens_per_second": 56.41
+      }
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "checks_passed",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\nreturn TIMEOUT_MS\n<<<NEW>>>\nreturn TIMEOUT_MS / 1000\n<<<END>>>",
+        "elapsed_seconds": 1.19
+      }
+    ],
+    "retry_count": 0,
+    "failure_kind": null,
+    "accepted_edit": {
+      "path": "pipeline.py",
+      "old_code": "return TIMEOUT_MS",
+      "new_code": "return TIMEOUT_MS / 1000",
+      "explanation": "Model-proposed replacement; correctness requires review and tests."
+    },
+    "settings": {
+      "version": "0.6",
+      "think_by_stage": {
+        "diagnose": false,
+        "edit": false
+      },
+      "format": "omitted",
+      "num_ctx": 4096,
+      "diagnosis_token_limit": 2400,
+      "edit_token_limit": 1600,
+      "max_corrective_retries": 1
+    },
+    "elapsed_seconds": 4.98,
+    "output_tokens": 235
+  },
+  "model_seconds": 4.98,
+  "retry_count": 0,
+  "first_edit_status": "checks_passed",
+  "diff": "--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,4 +1,4 @@\n from config import TIMEOUT_MS\n \n def timeout_seconds():\n-    return TIMEOUT_MS\n+    return TIMEOUT_MS / 1000\n",
+  "public_check": "assert p.timeout_seconds() == 2.5",
+  "public_before_retry": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.043
+  },
+  "behavioral_retry_count": 0,
+  "candidate_tests": {
+    "passed": true,
+    "returncode": 0,
+    "timeout": false,
+    "output": "ALL_CHECKS_PASSED\n",
+    "seconds": 0.04
+  }
+}

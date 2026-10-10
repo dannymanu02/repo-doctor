@@ -1,0 +1,44 @@
+{
+  "case": "batch_count",
+  "category": "integer_arithmetic",
+  "status": "output_truncated",
+  "issue": "pipeline.py batch_count(11, 5) returns 2, but processing 11 records with capacity 5 needs 3 batches.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-22alt5hb/checks.py\", line 6, in <module>\n    assert p.batch_count(11,5) == 3\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "seconds": 0.134
+  },
+  "context": "FILE pipeline.py\n1: def batch_count(count, capacity):\n2:     return count // capacity\n\nFILE README.md\n1: batch_count returns the number of batches required. count is a non-negative integer and capacity a positive integer. A partial batch counts as one. Zero records require zero batches; exact multiples require no extra batch.\n",
+  "result": {
+    "model": "qwen3:4b",
+    "edit_status": "rejected",
+    "output_truncated": true,
+    "raw_response": "DIAGNOSIS RESPONSE\n",
+    "answer": "### Diagnosis (model-generated)\n\n\n### No patch generated\nDiagnosis was incomplete or empty. Edit generation was skipped.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "",
+        "truncated": true,
+        "elapsed_seconds": 109.6,
+        "generated_tokens": 1600,
+        "tokens_per_second": 14.75
+      }
+    ],
+    "settings": {
+      "version": "0.4.1",
+      "think": true,
+      "format": "omitted",
+      "num_ctx": 4096,
+      "num_predict_per_call": 1600
+    },
+    "error": "Diagnosis was incomplete or empty. Edit generation was skipped.",
+    "elapsed_seconds": 109.6,
+    "output_tokens": 1600
+  },
+  "model_seconds": 109.6
+}

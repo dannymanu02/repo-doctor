@@ -1,0 +1,94 @@
+{
+  "case": "numeric_strings",
+  "category": "type_conversion",
+  "status": "execution_rejected",
+  "issue": "pipeline.py total_units(['2', '10']) raises TypeError rather than returning 12.",
+  "diagnosis_review": "not_reviewed",
+  "evidence_review": "not_reviewed",
+  "baseline": {
+    "passed": false,
+    "returncode": 1,
+    "timeout": false,
+    "output": "Traceback (most recent call last):\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-tests-vbzm4ndy/checks.py\", line 6, in <module>\n    assert p.total_units(['2','10']) == 12\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/var/folders/0d/y2bmjpkj2k95_b28klgd5hzw0000gn/T/repo-doctor-eval-gcmhd94n/repo/pipeline.py\", line 2, in total_units\n    return sum(values)\n           ^^^^^^^^^^^\nTypeError: unsupported operand type(s) for +: 'int' and 'str'\n",
+    "seconds": 0.042
+  },
+  "context": "FILE pipeline.py\n1: def total_units(values):\n2:     return sum(values)\n\nFILE README.md\n1: total_units sums a list of base-10 integer strings. Empty input returns zero. Negative integers are supported.\n",
+  "selection": [
+    {
+      "path": "pipeline.py",
+      "reason": "error match",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 2
+    },
+    {
+      "path": "README.md",
+      "reason": "documentation",
+      "depth": 0,
+      "start_line": 1,
+      "end_line": 1
+    }
+  ],
+  "retrieval_notes": [],
+  "result": {
+    "model": "qwen3:1.7b",
+    "edit_status": "checks_passed",
+    "output_truncated": false,
+    "raw_response": "DIAGNOSIS RESPONSE\nREQUIREMENTS:  \n- `total_units` should return the sum of integers represented by strings in `values`.  \n- `total_units` should handle empty `values` by returning 0.  \n- `total_units` should handle negative integers correctly.  \n- `total_units` should raise a `TypeError` only when the input is not a list of strings.  \n\nCAUSE:  \nThe implementation does not raise a `TypeError` when `values` is not a list of strings. The function currently returns the sum of the values without checking the type of `values`. This violates the requirement that the function should raise a `TypeError` for non-list inputs.  \n\nMISSING EVIDENCE:  \nNone needed for this diagnosis.\n\nEDIT ATTEMPT 1\nFILE: pipeline.py\n<<<OLD>>>\nreturn sum(values)\n<<<NEW>>>\nreturn sum(int(s) for s in values) if isinstance(values, list) else 0\n<<<END>>>",
+    "answer": "### Diagnosis (model-generated)\nREQUIREMENTS:  \n- `total_units` should return the sum of integers represented by strings in `values`.  \n- `total_units` should handle empty `values` by returning 0.  \n- `total_units` should handle negative integers correctly.  \n- `total_units` should raise a `TypeError` only when the input is not a list of strings.  \n\nCAUSE:  \nThe implementation does not raise a `TypeError` when `values` is not a list of strings. The function currently returns the sum of the values without checking the type of `values`. This violates the requirement that the function should raise a `TypeError` for non-list inputs.  \n\nMISSING EVIDENCE:  \nNone needed for this diagnosis.\n\n### Proposed diff\n```diff\n--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def total_units(values):\n-    return sum(values)\n+    return sum(int(s) for s in values) if isinstance(values, list) else 0\n```\n\nSource-match and compilation checks passed. Semantic correctness is unverified. No edits applied or tests run.",
+    "stages": [
+      {
+        "stage": "diagnosis",
+        "content": "REQUIREMENTS:  \n- `total_units` should return the sum of integers represented by strings in `values`.  \n- `total_units` should handle empty `values` by returning 0.  \n- `total_units` should handle negative integers correctly.  \n- `total_units` should raise a `TypeError` only when the input is not a list of strings.  \n\nCAUSE:  \nThe implementation does not raise a `TypeError` when `values` is not a list of strings. The function currently returns the sum of the values without checking the type of `values`. This violates the requirement that the function should raise a `TypeError` for non-list inputs.  \n\nMISSING EVIDENCE:  \nNone needed for this diagnosis.",
+        "truncated": false,
+        "elapsed_seconds": 2.91,
+        "generated_tokens": 150,
+        "tokens_per_second": 56.26
+      },
+      {
+        "stage": "edit",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\nreturn sum(values)\n<<<NEW>>>\nreturn sum(int(s) for s in values) if isinstance(values, list) else 0\n<<<END>>>",
+        "truncated": false,
+        "elapsed_seconds": 1.18,
+        "generated_tokens": 42,
+        "tokens_per_second": 58.37
+      }
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "checks_passed",
+        "content": "FILE: pipeline.py\n<<<OLD>>>\nreturn sum(values)\n<<<NEW>>>\nreturn sum(int(s) for s in values) if isinstance(values, list) else 0\n<<<END>>>",
+        "elapsed_seconds": 1.18
+      }
+    ],
+    "retry_count": 0,
+    "failure_kind": null,
+    "accepted_edit": {
+      "path": "pipeline.py",
+      "old_code": "return sum(values)",
+      "new_code": "return sum(int(s) for s in values) if isinstance(values, list) else 0",
+      "explanation": "Model-proposed replacement; correctness requires review and tests."
+    },
+    "settings": {
+      "version": "0.6",
+      "think_by_stage": {
+        "diagnose": false,
+        "edit": false
+      },
+      "format": "omitted",
+      "num_ctx": 4096,
+      "diagnosis_token_limit": 2400,
+      "edit_token_limit": 1600,
+      "max_corrective_retries": 1
+    },
+    "elapsed_seconds": 4.1,
+    "output_tokens": 192
+  },
+  "model_seconds": 4.1,
+  "retry_count": 0,
+  "first_edit_status": "checks_passed",
+  "diff": "--- a/pipeline.py\n+++ b/pipeline.py\n@@ -1,2 +1,2 @@\n def total_units(values):\n-    return sum(values)\n+    return sum(int(s) for s in values) if isinstance(values, list) else 0\n",
+  "public_check": "assert p.total_units(['2','10']) == 12",
+  "error": "Unsupported call: isinstance"
+}
